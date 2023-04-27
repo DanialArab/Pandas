@@ -32,7 +32,7 @@ Below is the summary of my notes from the book:
 
 *  The "round" method, when given a positive integer argument, rounds numbers after the decimal point. When given a negative integer argument, it rounds numbers *before* the decimal point!
 
-# **Retrieving** a series individual elements using textual vs. positional indexes:
+### **Retrieving** a series individual elements using textual vs. positional indexes:
 
   -- Use .iloc for the numeric index, and .loc for the custom textual index. You don’t need to use .iloc or .loc when you **retrieve slices**, however.
   
@@ -51,7 +51,7 @@ Below is the summary of my notes from the book:
 
 In a normal distribution, used for many statistical assumptions, we expect that 68% of a data set’s values will be within 1 standard distribution of the mean, that 95% will be within two standard distributions, and 99.7 will be within three standard distributions.
 
-# Data types in Pandas 
+### Data types in Pandas 
 
 Every series has a dtype attribute, and you can always read from that to know the type of data it contains. Every value in a series is of that type; unlike a Python list or tuple, you cannot have different types mixed together in a series. 
 
@@ -59,16 +59,15 @@ Normally, pandas guesses the dtype based on the data you pass it at creation:
 
 You can specify the type of data in a series by passing a value to the dtype parameter when you create a series like s = pd.Series ([1, 2, 3], dtype = np.float64)
 
-# astype
+### astype
 
 What if you want to change the dtype of a series once you’ve already created it? You can’t set the dtype attribute; it’s read only. Instead, you will need to create a new series based on the existing one by invoking the astype method:
 
-# Vectorization in Pandas 
+### Vectorization in Pandas 
 
 One of the most important ideas in pandas (and in NumPy) is that of vectorized operations. When you perform an operation on two different series, the indexes are matched, and the operation is performed via the indexes.
 
-# Selecting values using mask/boolean index in pandas
-
+### Selecting values using mask/boolean index in pandas
 
 In Python and other traditional programming languages, we can select elements from a sequence using a combination of for loops and if statements (**THIS IS EXACTLY WHAT I DID TO SOLVE THE ABOVE PROBLEMS**). While you could do that in pandas, you almost certainly don’t want to. Instead, you want to select items using a combination of techniques known as a **"boolean index"** or a **"mask index"**.
 
@@ -82,7 +81,7 @@ We also can use a mask index for assignment like s[s <= s.mean()] = 999 where we
 
 This technique is worth learning and internalizing, because it’s both powerful and efficient. It’s useful when working with individual series, as in this chapter—but it’s also applicable to entire data frames, as we’ll see later in the book.
 
-# Repeated values for index in pandas series
+### Repeated values for index in pandas series
 
 Yes, unlike the index in a Python string, list, or tuple which are unique, as are the keys in a Python dictionary, the series index can have repeated values—not just integers, but also strings (as in this example) and even other data structures, such as times and dates (as we’ll see in chapter 9). Normally, when we retrieve a value from a series via loc, we expect to get a single value back. But if the index is repeated, then we will get back multiple values. And in pandas, multiple values will be returned as a series.
 
@@ -96,7 +95,7 @@ from chatGPT:
 In pandas, the diff() function can be used to calculate the difference between consecutive elements in a Series. This function can also take an optional argument, periods, which specifies the number of periods to shift for the differences to be taken. By default, periods is set to 1.
 
 
-# FANCY INDEXING
+### FANCY INDEXING
 
 We’ve seen that I can retrieve the item at index 2 with s.loc[2], or the item at index 4 with s.loc[4]. But I can actually retrieve both of them at the same time with what’s known as "fancy indexing" **—passing a list, series, or similar iterable inside of the square brackets**. For example:
 
@@ -105,7 +104,7 @@ s.loc [[2, 4]]
 The outer square brackets indicate that we want to retrieve from s using loc. And the inner square brackets indicate that we want to retrieve more than one item. pandas returns a series, keeping the orignal indexes and values.
 
 
-# pd.read_csv
+### pd.read_csv
 
 read_csv is more typically used to create a data frame—but if we provide it with a file that contains only one data point per line, and pass a True value to the squeeze parameter, then we’ll get a series back. 
 
@@ -113,7 +112,7 @@ read_csv is more typically used to create a data frame—but if we provide it wi
 
 I also set the header parameter to be None, indicating that the first line in the file should not be taken as a column name, but rather is data to be included in our calculations. This will result in the series having a name value of 0, which we can safely ignore.
 
-# value_counts method
+### value_counts method
 
 It is a series method that is one of my favorites. If you apply value_counts to the series s, you get back a new series whose keys are the distinct values in s, and whose values are integers indicating how often each value appeared. 
 
@@ -126,7 +125,7 @@ If we’re interested in the percentages, not in the raw values, value_counts ha
 so the solution to the above problem would be much soimpler like pass_count.value_counts(normalize = True)[['1', '6']]
 
 
-# pd.cut
+### pd.cut
 
 The pd.cut method allows us to **set numeric boundaries, and then to cut a series into parts (known as "bins") based on those boundaries.** Moreover, it can assign labels to each of the bins.
 
@@ -152,7 +151,7 @@ df_nyc['trip_distance_group'] = pd.cut(df_nyc['trip_distance'],
                                       
                                       include_lowest = True)
 
-# 1.9 Summary
+### Summary
 
 In this chapter, we saw that a pandas series provides us with some powerful tools to analyze data. Whether it’s the index, reading data from files, calculating descriptive statistics, retrieving values via fancy indexing, or even categorizing our data via numeric boundaries, we were able to do quite a lot.
 
