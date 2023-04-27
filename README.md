@@ -8,7 +8,7 @@ Below is the summary of my notes from the book:
 
 ## 1. Pandas Series
 
-Lessons learned:
+**Points:** 
 
 * If I don't specify index when creating a pandas series, then the series index will be the default, integers starting from 0
 
