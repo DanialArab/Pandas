@@ -1045,10 +1045,364 @@ Cleaning data is one of the most important parts of data analysis, although it�
 <a name="6"></a>
 ## 6. Grouping, joining, and sorting
 
-HERE
+We often need to break our input data apart, to zoom in on particularly interesting subsets, to combine data from different sources, to transform the data into a new format or value, and then to sort it according to a variety of criteria. This combination of techniques is collectively known in the pandas world as **"split-apply-combine."** It’s common to use one or more of these when analyzing data. In this chapter, we’ll explore these techniques.
+
+-- Much like the GROUP BY clause in an SQL query, we can use **grouping in panda**
+
+-- Another common technique, also encountered when working with SQL databases, is that of **"joining."**
+
+-- A third technique, one which you have likely seen in other languages and frameworks, is that of **sorting**. In Chapter 5, we already saw how to use **sort_index** to order a data frame’s rows by the values in the index. In this chapter, we’ll look at **sort_values**, which **reorders the rows based on the values in one or more columns.**
+
+**some useful methods**:
+
+    df.transpose() or df.T: Returns a new data frame with the same values as df, but with the columns and index exchanged
+
+The transpose method is invoked like any other method in pandas, using parentheses:
+
+    df.transpose()
+
+HOWEVER, its convenient alias, **T, is not a method, and thus should not be invoked with parentheses:**
+
+    df.T
+
+    df.pct_change: For a given data frame, indicates the percentage difference between each cell and the corresponding cell in the previous row.
+
+    df.groupby: Allows us to invoke one or more aggregate methods for each value in a particular column.
+
+    df.join: Join two data frames together based on their **indexes**
+
+    df.merge: Join two data frames together based on **any columns**
+
+    df.corr: Show the correlation between the numeric columns of a data frame
+
+A score of 1 indicates that it’s 100% positively correlated, meaning that when one column goes up, the other column goes up by the same degree. A score of -1 indicates that it’s 100% negatively correlated, meaning that when one column goes up, the other goes down by the same degree. A score of 0 indicates that there is no correlation at all. Generally speaking, we say that the closer to 1 (or -1) the score, the more highly correlated two columns will be. By default, corr uses what’s known as the "Pearson correlation," about which you can read more here: https://en.wikipedia.org/wiki/Pearson_correlation_coefficient
+
+### sorting
+
+Data in relational (SQL) databases isn’t stored in any particular order. There are several reasons for this:
+
+* The order in which the rows are stored doesn’t affect many queries,
+* It’s more efficient for the database itself to figure out the order in which rows should be stored, and
+* There are so many ways in which we might want to sort the data that the database shouldn’t guess. Rather, it should allow us to choose how we want to sort and extract the information.
+
+Now pandas does keep the rows of our data frame ordered, so **it’s not exactly like a relational database**. But it’s true that for many types of analysis, the order of the rows doesn’t matter. After all, if you’re calculating a column’s mean, then it doesn’t matter where you start or end.
+
+But if you want to display data—say, sales records, network statistics, or inflation projections—then you’ll likely want to order them. But how you want to order them depends on the context. Sales records might need to be ordered by department, network statistics might need to be ordered by subnets, and inflation projects might need to be ordered chronologically.
+
+Another reason to sort is to get the highest or lowest values from a particular column in the data frame.
+
+**point on sort_index vs. sort_values:**
+
+You could argue that there isn’t really much difference between the two; we could take a column, temporarily make it the index, sort by the index, and then return the column back to the data frame. But the difference between sort_index and sort_values isn’t just technical. We’re thinking about our data, and how we want to access it, in different ways.
+
+sort_values is also different from sort_index in another way, namely that we can sort **by any number of columns**. Imagine, once again, that your data frame contains sales data. You might want to sort it by price, by region, or by salesperson—or even by a combination of these. When we sort by the index, by contrast, we’re effectively sorting by a single column.
+
+**point on using iloc vs loc on the sorted dataframe**
+
+    df.sort_values('trip_distance', ascending=False)['total_amount'].iloc[:20]:
+
+Notice that we have to use iloc here, and not loc. That’s because **loc works with the actual index values**—which, now that we’ve sorted the data frame by trip_distance, will be unordered. Asking for loc[:20] will return many more than 20 rows.
+
+So we need to use iloc or head/tail to retrieve the first/last 20 rows, because the index was all scrambled (means disordered) after our **sort operation**. But you can pass **ignore_index=True to sort_values**, and then the resulting data frame will have a numeric index, starting at 0.
+
+### grouping
+
+Sometimes we want to run an aggregate function on each piece of our data. 
+
+This functionality, known as "grouping," should also be familiar to you if you’ve worked with relational databases. 
+
+    df.groupby('department')
+    
+Notice that the argument to groupby needs to be the **name of a column**. And the result of running the groupby method is a **DataFrameGroupBy object**, which is useful to us because of the aggregate methods we can invoke on it. For example, I can call count, and thus find out how many items we have in each department:
+
+    df.groupby('department')['product_id'].count()
+
+While I’ve used count in my examples here, you can use **any aggregation method when grouping, such as mean, std, min, max, and sum**. So we could get the average product price, per department, in our store as follows:
+
+    df.groupby('department')['retail price'].mean()
+
+What if we want to know both the mean and the standard deviation of prices in our store, grouped by department? You can actually do that, by altering the syntax somewhat: Instead of calling an aggregation method directly, we can **apply the agg method to our DataFrameGroupBy object. That method then takes a list of methods, each of which will be applied to**
+
+    df.groupby('department')['retail price'].agg([np.mean, np.std])
+
+What if we want to run mulitple aggregations on separate columns? 
+
+In such a case, we don’t need to filter columns via square brackets. Rather, we can pass the entire DataFrameGroupBy object to agg. We then pass multiple keyword arguments to agg:
+
+* The key to each keyword argument will be the name of an output column
+* The value to each keyword argument is a two-element tuple:
+
+    * The first element in the tuple is a string, the name of the column in the original data frame we want to analyze
+    * The second element in the tuple is also a string, the name (yes, as a string) of an aggregation method we wish to run on that column.
+
+For example, we can get the mean and standard deviation of retail_price per department, as well as find the max sales for each department:
+
+    df.groupby('department').agg(mean_price=('retail_price', 'mean'),
+                                 std_price=('retail_price', 'std'),
+                                max_sales=('sales', 'max'))
+
+
+side note: 
+Normally, groupby sorts the group keys. If you don’t want to see this, or if you are concerned that it’s making your query too slow, you can pass sort=False to groupby:
+
+    df.groupby('department', sort=False)['retail_price'].agg([np.mean, np.std])
+
+
+## When we’re using groupby, we have to keep several things in mind:
+
+* On what data frame are we operating?
+* Which column will supply the groups? This column will almost always be categorical in nature, either with a limited number of string values or with a limited set of integers (as is the case here). The distinct values from this column will be the rows in the output from our aggregation method.
+* Which column(s) do we want to analyze? That is, on which columns will we run our aggregation methods?
+* Finally, which aggregation method(s) will we be running?
+
+
+### joining 
+
+Like grouping, joining is a concept that you might have encountered previously, when working with relational databases. The joining functionality in pandas is quite similar to that sort of database, although the syntax is quite different.
+
+how does pandas know which rows on the left should be joined with which rows on the right? The answer, at least by default, is that it uses the **index**. Wherever the index of the left side matches the index of the right side, it’ll join them together, giving them a new row that contains all columns from both left and right.
+
+This means that we’ll want to change our data frames, such that both are using the same values for their indexes. So I need to set_index of the two dataframes to the common column in both then now that our data frames have a **common reference point in the index**, we can create a new data frame combining the two:
+
+    products_df.join(sales_df)
+
+note: both products_df and sales_df dataframes have a column named 'product_id':
+
+    * products_df = products_df.set_index('product_id') 
+
+    * sales_df = sales_df.set_index('product_id')
+
+another example:
+
+    products_df.join(sales_df).groupby(['date','name'])[
+            'retail_price'].sum().sort_index()
+        
+**point on left vs. right join**
+
+When we are performing a left join it means that the left side (i.e., the data frame on  which we're running the join, df_tour in the below example) **determines which rows will be included**. If there is no match on the right, then we get back a null value.
+
+    df_tour.join(df_coun_name)
+
+**interesting point**:
+
+we can run join on a df whose index is not the same as the other df, in this case the caller df (the one on the left) should have a column which should be matched with the index of the other df, in the example below the index of df_coun_name is numeric and not the same as the index of df_tour but df_coun_name has a column named 'abbr' which can be used to join with the other df whose index is matched with 'abbr' column of the caller df, df_coun_name I mean. However the point is that the data frame passed as an argument to join will always be joined on **its index**.
+
+    df_coun_name.join(df_tour, on = 'abbr')
+
+point from reuven:
+I always like to create **separate data frames, and then join them together.** This not only lets me do things step by step, but also ensures that I can debug, improve, and rerun my steps more easily.
+
+
+### normalization
+
+Separating your data into two or more pieces, so that **each piece of information appears only a single time, is known as "normalization."** There are all sorts of formal theories and descriptions of normalization, but it all boils down to **keeping the information in separate places**, and joining data frames when necessary.
+
+Sometimes, you’ll normalize your own data. But sometimes, you’ll receive data that has been normalized, and then separated into separate pices. For example, many data sets are distributed in separate CSV file, which almost always means that you’ll need to join two or more data frames together in order to analyze the information. Other times, you might want to normalize the data yourself, in order to gain flexibility or performance.
+
+One final point: The join that I’ve shown you here is known as a **"left join"** in that values of product_id on the left (i.e., in products_df) drive which rows will be selected on the right (i.e., sales_df). More advanced joins, known as **"outer joins"** allow us to tell pandas that even if there isn’t a corresponding row on the left or the right, we will want to have a row in the result, albeit (meaning although) one filled with null values. We’ll explore those in Exercise 35, at the end of this chapter.
+
+
+**.to_frame() method**
+
+You can only invoke join on a **data frame** and **NOT on a series**. (You can pass a series as the argument to join, though—so a series can be **the right side, but not the left side, of a pandas join.)**
+
+Fortunately, we can call the to_frame method on our series, and get back a single-column data frame with the same index as we had in the series:
+
+    country_points.to_frame().join(tourism_spending)
+
+Once again, it’s important to remember that a join links the left data frame with the right one, connecting them along their indexes. 
+
+**What happens if the left and right data frames have identically named columns?**
+
+After all, while pandas indexes don’t need to have unique elements, column names must be unique. If you try to join frames such that you’ll end up with more than one column with the same name, you’ll get a ValueError exception, saying, "columns overlap but no suffix specified." And indeed, pandas allows you to specify what the suffixes should be for the left side **(lsuffix)** and right side **(rsuffix)** when you invoke join. For example, we can join oecd_df with itself (already a wild idea known as a "self join," for which there are actually practical uses) with
+
+    oecd_df.join(oecd_df, lsuffix='_l', rsuffix='_r')
+
+The data frame we get back has two identical columns, named country_l and country_r (country is the name of the column in oecd_df).
+
+
+We may have NaN values in some rows after left join. That’s because the **index of left data frame** (in this case, country_points.to_frame()) **dictates the index of the resulting data frame. As a result, this is knowon as a "left join." In a left join, columns from the right frame will be missing values (and thus have NaN) wherever there was no corresponding row for the left’s index.**
+
+**right join**
+
+If we want to use the right data frame’s index in the result, then we can use a "right join." You can accomplish that in pandas by passing **how='right' to the join method. (By default, the method assumes how='left'.)** In such a case, you’ll get NaN values on columns from the left frame wherever it has no index entry corresponding to the right.
+
+**outer join**
+
+We can also be fancy, and do an "outer join," in which case the **output frame’s index is the combination of the left’s index and the right’s index**. You might thus end up with NaN values in columns from both the left and right, depending on which index value was missing. 
+
+    country_points.to_frame().join(tourism_spending, how='outer')
+
+Outer joins ensure that you don’t lose any data when combining data sources, but they don’t automatically interpolate values, either—so you will almost certainly end up with some null values, which (as we’ve seen in Chapter 5) need cleaning in various ways.
+
+**inner join**
+
+The "inner" join assures that the index in the final df will only contain values that exist in all of the data frames to be joined. I can do this by passing the keyword argument **how='inner'** to call to join:
+
+df_oil.join(df_ice_cream, how = 'inner').join(df_mile_traveled, how = 'inner')
+
+
+#### Great point on merge vs. join:
+
+My understanding: i think merge works with column names and not index so the difference between merge and join is that
+join works with index but merge works with column names:
+
+**chatGPT comment on my above understanding;**
+
+Yes, that's correct! The merge method in pandas works by merging two DataFrames based on the values in specified columns, which can be different from the index. The join method, on the other hand, works by merging two DataFrames based on their indexes.
+
+**How is the default merge different from the default join, when it comes to NaN values?**
+
+By default, join performs a "left join," meaning that there might be NaN values in the column(s) from the right side. However, merge performs an "inner join" by default, meaning that it uses the intersection of the indexes from the right and left. As a result, NaN values won't occur thanks to the join (but they might come in thanks to NaN values in the input frames.
+
+### Window functions
+
+let's say i have:
+
+    df = DataFrame({'sales':[100, 150, 200, 250,
+                    200, 150, 300, 400,
+                    500, 100, 300, 200],
+                  'quarters':'Q1 Q2 Q3 Q4'.split() * 3})
+              
+If we want to find out how much we sold, total, through the current quarter? That is, I want to know how much we sold in Q1. Then in Q1+Q2. Then Q1+Q2+Q3. And so on, until the final result will be df['sales'].sum().
+
+pandas provides us with "window functions." There are several different types of window functions, but the basic idea is that they allow us to **run an aggregate function, such as mean, on subsections of our data frame.**
+
+### 1. expanding window function: 
+
+What I described earlier, that we would like to know, for each quarter, how much we revenue we had through that quarter, is a classic example of a window function. This is known as an **"expanding window,**" because we run the function with an ever-expanding number of lines—first one line, then two, then three… all the way up to the entire data frame.
+
+    df['sales'].expanding().sum()
+
+Perhaps we don’t want to get a cumulative total, but rather want to get a **running average** of how much we’ve sold per quarter. We can run mean, or any other aggregation method:
+
+    df['sales'].expanding().mean()
+
+In this case, the output from expanding will be 100, 125, 150, and 175.
+
+
+### 2. rolling window function:
+
+With rolling window functions we determine **how many rows** will be considered to be part of the window. For example, if the window size is 3, then we’ll run the aggregation function on row index 0-2, then 1-3, then 2-4, etc., until we get to the end of the data frame. For example, if you want to find out the mean of rows that are close to one another, you can do it as follows:
+
+    df['sales'].rolling(3).mean()
+
+In the above code, rolling is how I indicate that I want to run a rolling window function, and the argument 3 indicates that I want to have three rows in each window. We’ll thus invoke mean on rows 0-2, then 1-3, then 2-4, then 3-5, etc. T**he series that we get back from this call will put the result of mean in the same location as the third (and final) row in our rolling window. This means that row indexes 0 and 1 will have NaN values.**
+
+### 3. pct_change window function:
+
+A third type of window function is pct_change. When we run this on a series, we get back a new series, with NaN at row index 0. The remaining rows indicate the percentage change from the previous row to the current one:
+
+    df['sales'].pct_change()
+
+The result is calculated as **(later_row - earlier_row) / earlier_row**:
+
+    * index 0 is always NaN
+ 
+pct_change is great for finding **how much your values have gone up, or down, from row to row.**
+
+### Filtering and transforming
+
+#### filter method
+
+* filter takes a function as an argument.
+
+* The function we pass will be invoked **once per group**. It receives a data frame—a subset of df—as its argument.
+
+* The function must return True or False. to indicate whether rows from that group should be included or excluded in the resulting data frame.
+
+* The function can either be a full-fledged Python function (i.e., one defined with def), or it can be lambda for an inline, anonymous function.
+
+Here’s an example of such a function, as well as how I could invoke it:
+
+    def year_average_is_at_least_90(df):
+        return df['score'].mean() > 90
+
+    df.groupby('year').filter(year_average_is_at_least_90)
+
+OR
+
+    df.groupby('year').filter(lambda df: df['score'].mean() > 90)
+
+**Whereas filter on a data frame works on a row-by-row basis, filter on a GroupBy object works on a group-by-group basis.**
+
+#### transform method
+
+Another, related method that you can use on a **GroupBy object** is transform. In this case, the point is not to remove rows from the original data frame, but rather to transform them in some way. For example, let’s say that we want to turn the score into a percentage, expressed as a float. We could say:
+ 
+    df.groupby('year')['score'].transform(lambda x: x/100)
+
+another example: 
+In the resulting series of **df.groupby('year')['score'].transform(np.max)**, the value in each row is the highest value of score from that particular year. In other words, we have replaced every score by the maximum score for that year. 
+
+**As you can see, the grouped version of transform is useful when we want to transform values in a data frame on a group-by-group basis, much as the grouped version of filter is useful when we want to filter values on a group-by-group basis.**
+
+The filter method for GroupBy is very similar to Python’s builtin filter function, and that the transform method for GroupBy is very similar to Python’s builtin map function. They work a bit differently, since they’re acting on data frames rather than simple iterables, but the usage is similar.
+
+**encouraging point:**
+
+The DataFrameGroupBy versions of filter and transform are, in my experience, among the most complex pieces of functionality that pandas provides. It might take you a while to think through what calculation you want to perform, and then to find the right way to express it in pandas.
 
 <a name="7"></a>
 ## 7. Midway project
+
+Here is what I’d like you to do:
+
+* 1. Load the CSV file with results from the Python survey into a data frame. Let’s call that py_df.
+* 2. Turn the columns into a multi-index. How you do this depends on the column:
+
+    * Most of the columns have the form first.second.third, with two or more words separated by . characters. Divide the column name into two parts, one before the final . and one after. The multi-index column for this example would then be ('first.second', 'third'). If there were only two parts, it would be ('first', 'second').
+    * In the case of about 20 columns, the top level should be general, and the second level should be the original column name. The columns you should treat this way are:
+
+        * age,
+        * are.you.datascientist,
+        * is.python.main,
+        * company.size,
+        * country.live,
+        * employment.status,
+        * first.learn.about.main.ide,
+        * how.often.use.main.ide,
+        * is.python.main,
+        * main.purposes
+        * missing.features.main.ide
+        * nps.main.ide,
+        * python.version.most,
+        * python.years,
+        * python2.version.most,
+        * python3.version.most,
+        * several.projects,
+        * team.size,
+        * use.python.most,
+        * years.of.coding
+
+    * Use the function pd.MultiIndex.from_tuples to create the multi-index, and then reassign it back to df.columns. (Hint: A function, along with a Python for loop or list comprehension, will come in handy here.)
+    
+* 3. Sort the columns, such that they’re in alphabetical order. (This isn’t technically necessary, but it makes the data easier to see and understand.)
+* 4. Which 10 IDEs were most commonly listed as the main editor (i.e., in the ide column)?
+* 5. Which 10 other programming languages (other.lang) are most commonly used by Python developers?
+* 6. According to the Python survey, what proportion of Python developers have each level of experience?
+* 7. Which country has the greatest number of Python developers with 11+ years of experience?
+* 8. Which country has the greatest proportion of Python developers with 11+ years of experience?
+* 9. Now load the Stack Overflow data into a data frame. Let’s call that so_df.
+* 10. Show the average salary for different types of employment. Contractors and freelancers like to say that they earn more than full-time employees. What does the data here show us?
+* 11. Create a pivot table in which the index contains countries, the columns are education levels, and the cells contain the average salary for each education level per country.
+* 12. Create this pivot table again, only including countries in our OECD subset. In which of these countries does someone with an associate degree earn the most? In which of them does someone with a doctoral degree earn the most?
+* 13. Remove rows from so_df in which LanguageHaveWorkedWith is NaN.
+* 14. Remove rows from so_df in which Python isn’t included as a commonly used language (LanguageHaveWorkedWith). How many rows remain?
+* 15. Remove rows from so_df in which YearsCode is NaN. How many rows remain?
+* 16. Replace the string value Less than 1 year in YearsCode with 0. Replace the string value More than 50 years with 51.
+* 17. Turn YearsCode into an integer column.
+* 18. Create a new column in so_df, called experience, which will categorize the values in the YearsCode. Values can be:
+
+        * Less than 1 year
+        * 1–2 years
+        * 3–5 years
+        * 6–10 years
+        * 11+ years
+        
+* 19. According to the Stack Overflow survey, what proportion of Python developers have each level of experience? # Create a data frame in which the index contains the level of experience, and the two columns are the proportion of Python developers with that level from each of the two surveys. Would you say that the Stack Overflow respondents are less experienced, more experienced, or the same as those in the Python community survey?
+
+
 
 <a name="8"></a>
 ## 8. Strings
