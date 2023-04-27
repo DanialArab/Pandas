@@ -156,3 +156,203 @@ we can include the lower bound with passig **include_lowest = True** like
 In this chapter, we saw that a pandas series provides us with some powerful tools to analyze data. Whether it’s the index, reading data from files, calculating descriptive statistics, retrieving values via fancy indexing, or even categorizing our data via numeric boundaries, we were able to do quite a lot.
 
 In the next chapter, we’ll expand our reach to look at data frames, the two-dimensional data strucures that most people think of when they work with pandas.
+
+## 2. Pandas DataFrames
+
+Data frames are two-dimensional tables that look and work similar to an Excel spreadsheet. The rows are accessible via an index—yes, the same index that we have been using so far with our series! **So long as you use .loc and .iloc to retrieve elements via the index, you’ll be fine.**
+
+But of course, data frames also have columns, each of which has a name. Each column is effectively its own series, which means that it has an independent dtype from other columns.
+
+In a typical data frame, each column represents a feature, or attribute, of our data, while each row represents one sample.
+
+We’ll also see how just about every series method will also work on a data frame, returning one value per data frame column.
+
+### BRACKETS OR DOTS?
+
+When we’re working with a series, we can retrieve values in several different ways: Using the index (and loc), using the position (and iloc), and also using plain ol' square brackets, which is essentially equivalent to loc.
+
+When we work with data frames, we **must use loc or iloc.** That’s because square brackets refer to the columns. If you try to retrieve a row, via the index, using square brackets, you’ll get an error message saying that no such column exists.
+
+Square brackets always refer to columns, and never to rows. **Except, that is, when you pass them a slice, in which they look at the rows.** If you want to retrieve multiple columns, then you must use **fancy indexing.** You cannot use a slice.
+
+**dot notation**
+
+If you want to retrieve the column colname from data frame df, you can say df.colname. **THIS DOES NOT WOTK** when columns names include spaces and other illegal-in-Python-identifer characters. 
+
+## Adding columns to a dataframe
+
+We just assign to the data frame, using the name of the column that we want to spring into being. It’s typical to assign a series, but you can also assign a NumPy array or list, so long as it is of the same length as the other, existing columns.
+
+There is another way to add a column to a pandas data frame, namely the assign method. I generally prefer to just add a new column directly, as described here. But assign returns a new data frame, rather than modifying an existing one, which can come in handy.
+
+Column names are unique—so just as with a dictionary, assigning to an existing column will replace it with the new one. That said, if your data frame’s columns are not of the same dtype, you might find yourself with a SettingWithCopyWarning when assigning for replacement. 
+
+### Retrieving and Assigning with loc
+
+It’s pretty straightforward to retrieve an entire row from a data frame, or even replace a row’s values with new ones. For example, I can grab the values in the row with index abcd with df.loc['abcd']. If I prefer to use the numeric (positional) index, then I can instead use df.iloc[5]. In both cases, I get back a series. (Yes, even though the columns of a data frame are a series, pandas uses a series whenever it returns multiple, one-dimensional data.)
+
+
+Retrieving a whole row isn’t that tough. But what if want to retrieve only part of a row? More significantly, how could we set values on only part of a row?
+
+pandas actually provides us with a number of techniques for setting values. My preferred method is to use loc, providing two arguments in the square brackets. The first describes the row(s) that we want to retrieve, while the second describes the column(s) we want to retrieve. This technique also lends itself to changing and updating values in a data frame.
+
+If I want to retrieve row a and c and columns v and y: 
+
+**df.loc[['a', 'c'], ['x', 'y']]**
+
+I can describe our rows using a boolean index. That is, we can create a boolean series using a conditional operator (e.g., < or ==), and apply it to the rows and/or the columns. For example, I can find all of the rows in which x is greater than 200:
+
+**df.loc[df['x']>200]**
+
+I can then add a second value boolean index, after the comma, indicating which columns we want: 
+
+**df.loc[df['x']>200, df.loc['c'] > 400]**
+
+The above expression will return all of those rows from df in which column x was greater than 200, and all those columns from df in which row c was greater than 400.
+
+Notice that because the first boolean index is choosing rows, it is based on a column. And because the second boolean index is choosing columns, it is based on a row—which means that it should be using loc.
+
+Of course, our conditions can be far more complex than these. But as long as you keep in mind that you want to select based on rows before the comma, and based on columns after the comma, you should be fine.
+
+
+If I want to set all of the values in row b, where column c is even, to new values, then I can assign a list (or NumPy array, or pandas series) of three items, matching the three I get back from the query:
+
+
+**df.loc['b', df.loc['c'] % 2 == 0] = [123, 456, 789]**
+
+I can also assign a data frame or 2-dimensional NumPy array to any two-dimensional selection. For example, here I’ll assign the float 1 to 12 different elements of df:
+
+**df.loc[df['v'] > 400, df.loc['d'] > 400] = np.ones(12).reshape(4,3)**
+
+We can broadcast a scalar values to any of the above. For example:
+
+**df.loc[df['v'] > 400, df.loc['d'] > 400] = 987**
+
+Finally, if your data frame’s columns are not of the same dtype, then you might encounter a SettingWithCopyWarning when you replace an existing column with a new set of values. You can avoid trouble by using loc to assign to all rows and a particular column using :, as if we were working with a slice:
+
+**df.loc[:, 'd'] = df['d'].astype(np.float16)**
+
+The above code will replace the current values of column d with new values, all of them having a dtype of float16.
+
+### pd.concat
+
+The pd.concat function concatenates dataframes with each other. It’s a top-level pandas function, and takes a list of data frames you would like to concatenate. By default, pd.concat assumes that you want to join them top-to-bottom, but you can do it side-to-side if you want by setting the axis parameter.
+
+The result of pd.concat is a new data frame.
+
+### note on the final dataframe after the concatenation: 
+
+Next, I asked you to ensure that the new data frame (the one after concatenation)’s index doesn’t contain duplicate values—something that is almost certainly the case at this point, given that we created df from two previous data frames. You can actually check to see if a data frame’s index contains repeated values with the code
+
+**df_ny_taxi_2020.index.is_unique**
+
+If this returns True, then the values are already unique. If not, then some Seaborn plots will give you errors. We could renumber the index on our own, but why work so hard, when pandas includes this functionality? We can just say:
+
+**df_ny_taxi_2020 = df_ny_taxi_2020.reset_index(drop=True)**
+
+By passing drop=True, we tell reset_index not to make the just-ousted index column a regular column in the data frame, but rather to drop it entirely.
+
+### THE Query method --  to retrieve rows
+The traditional way to select rows from a data frame, as we have seen, is via a boolean index. But there is another way to do it, namely the query method. This mehod might feel especially familiar if you have previously used SQL and relational databases.
+
+The basic idea behind query is simple: We provide a **string** that pandas turns into a full-fledged query. We get back a filtered set of **rows** from the original data frame. For example, let’s say that I want all of the rows in which the column v is greater than 300. Using a traditional boolean index, I would write:
+
+**df[df['v'] >300]**
+
+Using query, I can instead write:
+
+**df.query('v > 300')**
+
+
+These two techniques return the same results. When using query, though, we can name columns without the clunky square brackets, or even the dot notation. It becomes easier to understand.
+
+What if I want to have a more complex query, such as where column v is greater than 300 and column w is odd? We can write it as follows:
+
+**df.query('v > 300 & w % 2 ==1') **
+
+It’s not necessary, but I still like to use parentheses to make the query a bit more readable:
+
+**df.query('(v > 300) & (w % 2 == 1)')**
+
+Note that query cannot be used on the left side of an assignment.
+
+Also note that in some simple benchmarks that I ran, using query took about twice as long to execute as loc. It might be more convenient, but it isn’t necessarily a good idea if you’re worried about performance.
+
+**question for chatGPT:** is pandas query for just rows?
+
+Re:
+
+Yes, the pandas query method is used to **filter rows** in a DataFrame based on a Boolean expression. It returns a **new DataFrame** containing only the rows that satisfy the specified condition.
+
+### **Outliers**
+
+The term "outliers" doesn’t have a precise, standard definition. one definition is: 
+
+**"inter-quartile range," or "IQR" = quantile(0.75) - quantile(0.25)**
+
+Outliers would then be values **below the quantile(0.25) - 1.5 * IQR**, or any values **above the quantile(0.75) + 1.5 * IQR**.
+
+We’ll use this definition here, but you might find that a different definition—say, anything below the mean - two standard deviations, or above the mean + two standard deviations, might be a better fit for your data.
+
+
+**side note, i asked chatGPT is quantile the same as quartile?**
+
+### NaN and missing data
+
+pandas uses something known as NaN, aka "not a number." NaN is the pandas style for writing nan, a value that’s also available in NumPy. Both names are aliases to the same strange value, a float that cannot be converted into an integer, and that is not equal to itself.
+
+In NumPy, we typically search for NaN values with the **isnan** function. pandas has a different approach, though: We can **replace** the NaN values in a series (or data frame) with the **fillna** method. And we can **drop any row with NaN values with the dropna** method.
+
+
+Both of these methods return a **new series or data frame**, rather than modifying the original object. However, the new object you get back might not have copied the data, which means that assigning to it might produce the famous, dreaded SettingWithCopyWarning. If you plan to modify the series or data frame that you get back from df.dropna, you should probably invoke the copy method, just to be sure:
+
+**df = df.dropna().copy()**
+
+This ensures that you can then modify df without having to suffer from that warning.
+
+As you can imagine, it might be a bit extreme to remove any row containing even a single NaN value. For that reason, the dropna method has a **thresh** parameter, to which we can pass an integer—the number of **good, non-NaN values** that a row must contain in order for it to be kept. You might need to give some serious thought to how strictly you want to filter your data.
+
+The **count** method on a series returns the number of **non-NaN values**. If there are no NaN values at all, then the result will be the same as the size of the series.
+
+The count method on a data frame returns a series, with the columns' names as the index. Any columns with lower numbers, Reuven should have meant "compared to the len of dataframe", contain NaN values.
+
+
+Quantiles and quartiles are related concepts, but they are not exactly the same thing.
+
+A quartile is a specific type of quantile that divides a dataset into four equal parts. The first quartile, denoted Q1, represents the 25th percentile of the data, which means that 25% of the data falls below this value. The second quartile, denoted Q2 or the median, represents the 50th percentile of the data. The third quartile, denoted Q3, represents the 75th percentile of the data.
+
+Quantiles, on the other hand, are a more general concept that divides a dataset into equal parts, but not necessarily into four equal parts. For example, the median is a quantile that divides the data into two equal parts (i.e., the 50th percentile). Other common quantiles include the decile (which divides the data into ten equal parts) and the percentile (which divides the data into 100 equal parts).
+
+So, while quartiles are a type of quantile, the term "quantile" is a more general term that includes other types of divisions of the data into equal parts.
+
+### interpolation
+
+When your data contains missing values, you have a few possible ways to handle this. You can remove rows with missing values, but that might remove a large number of otherwise useful rows. A standard alternative is interpolation, in which you replace NaN with values that are likely to be close to the orignal ones. The values might be wrong, but but they will be roughly in the right ballpark.
+
+When we call df.interpolate, it returns a new data frame. In theory, all of the columns will be interpolated—but if there is only missing data in one specific column that column will be interpolated. 
+
+### Reuven's tip on urgency to use .loc
+
+If you’re like many pandas users, then you might have thought about things like this:
+
+**df_temps[df_temps['temp'] < 0]['temp'] = 0**
+
+Logically, this makes perfec sense. There’s just one problem: You cannot know in advance if it will work. That’s because pandas does a lot of internal analysis and optimization when it’s putting together our queries. You thus cannot know if your assignment will actually change the temp column on df, or—and this is the important thing—if pandas has decided to cache the results of your first query, applying ['temp'] to that cached, internal value rather than to the original one.
+
+As a result, it’s common—and maddening!—to get a SettingWithCopyWarning from pandas. It looks like this:
+
+<ipython-input-2-acedf13a3438>:1: SettingWithCopyWarning:
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+    
+When you get this warning, it’s because pandas is trying to be helpful and nice, telling you that your assignment might have no effect. The warning, by the way, isn’t telling you that the assignment won’t work, because it might. It all depends on the amount of data you have, and how pandas thinks it can or should optimize things.
+
+The telltale sign that you might get this warning is the use of double square brackets—not nested, with one pair inside of the other, but with one right after the other. Whenever you see **][** in pandas queries, you should try hard to avoid it, because it might spell trouble when you assign to it. And truthfully, retrieving with this syntax, while something that all of us have done over the years, is something that you can avoid **using loc** and the "rows, columns" selection syntax that we’ve seen and discussed.
+
+So, how should we actually set these values? It’s actually pretty straightforward:
+
+**df_temps.loc[df_temps['temps'] < 0, 'temp']  = 0**
+                                     
+If you use this syntax for all of your assignments, you won’t ever see that dreaded SettingWithCopyWarning message. You’ll be able to use the **same syntax for retrieval and assignment**. And you can even be sure that things are running pretty efficiently.
+
+                                  
