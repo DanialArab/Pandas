@@ -4,8 +4,16 @@ This repository documents my understanding of Pandas and contains my solutions (
 
 Pandas is all about analyzing data. And a major part of the analysis that we do in Pandas can be phrased as, **"Where this is the case, show me that."**
 
+# Table of content
+
+1. [Pandas Series](#1)
+
+2. [Pandas DataFrames](#2)
+
+
 Below is the summary of my notes from the book:
 
+<a name="1"></a>
 ## 1. Pandas Series
 
 **Points:** 
@@ -157,6 +165,7 @@ In this chapter, we saw that a pandas series provides us with some powerful tool
 
 In the next chapter, we’ll expand our reach to look at data frames, the two-dimensional data strucures that most people think of when they work with pandas.
 
+<a name="2"></a>
 ## 2. Pandas DataFrames
 
 Data frames are two-dimensional tables that look and work similar to an Excel spreadsheet. The rows are accessible via an index—yes, the same index that we have been using so far with our series! **So long as you use .loc and .iloc to retrieve elements via the index, you’ll be fine.**
