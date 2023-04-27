@@ -481,7 +481,7 @@ What about the blank lines? We actually got off pretty easy here, in that **read
 #### 5. names
 if your file is not a csv file and like it is a text file. In this case, if we don’t give any names, then the data frame’s columns will be labeled with integers, starting with 0. There’s nothing technically wrong with this, but it’s harder to work with data in this way. Besides, it’s easy enough to pass the names we want to give our columns, as a list of strings. 
 
-## How to specify more than one separator
+### How to specify more than one separator
 
 I’m often asked if we can specify more than one separator. For example, what if fields can be separated by either : or by ,? What do we do then?
 
@@ -574,4 +574,18 @@ Finally: It’s often tempting to set a dtype to be an integer value. But rememb
 | float32 (single-precision floating-point) |(-3.4028235 x 10^38 to 3.4028235 x 10^38) | 3.4028235 x 10^38 |
 | float64 (double-precision floating-point) | (-1.79 x 10^308 to 1.79 x 10^308) | 1.79 x 10^308 |
 
-      here
+## 4. Indexes
+
+Every data frame has an index (describing the rows) and a list of columns. Indexes in Pandas are extremely flexible and powerful; an index can even be hierarchical, allowing us to query our data in sophisticated ways. Understanding how we can create, replace, and use indexes is a crucial part of working with Pandas. In this chapter, we’ll practice working with indexes in a variety of ways. We’ll also see how we can change a data frame’s index, and how we can use it to summarize our data in a **"pivot table."**
+
+We have already seen numerous examples of how to retrieve one or more rows from a data frame **using its index, along with the loc atttribute.** We don’t necessarily need to use the index to select rows from a data frame, but it does make things easier to understand and for clearer code. For this reason, we often want to use one of a **data frame’s existing columns as an index**. Sometimes, we’ll want to do this permanently, while at other times, we’ll want to do it briefly, just to make our queries clearer.
+
+You’ll likely end up doing a **great deal of setting and resetting the index as you work with pandas with real-life data sets.**
+
+We have already seen that if we want to retrieve rows from a data frame that meet a particular condition, we can use a boolean index. **Oftentimes, especially if we are looking for specific values from a column, it makes more sense to turn that column into the data frame’s index.** pandas makes it easy to do this, with the **set_index** method.
+
+**If we want to perform several queries based on the specific column, it makes sense to set the index to that particular column.** like if we are going to perform several queries based on the parking tickets' issue date, it makes sense to set the index to the Issue Date column. Notice that set_index returns a **new data frame**, based on the original one, which we assign back to df. As of this point, if we make queries that involve the index (typically using loc), it’ll be based on the value of issue date. Also: As far as the data frame is concerned, **there is no longer an Issue Date column! Its identity as a named column is gone**, at least for now.
+
+As of this writing, the set_index method (along with many others in pandas) supports the **inplace parameter**. If you call set_index and pass inplace=True, then the method will return None, and will modify the dataframe. The core pandas developers have warned that this is a bad idea, because it makes incorrect assumptions about memory and performance. There is no benefit to using inplace=True. As a result, the inplace parameer is likely to go away in a future version of pandas.
+
+Thus while it might seem wasteful to call set_index and then assign its result back to df, this is the preferred, idiomatic way that we are to do things in pandas.
