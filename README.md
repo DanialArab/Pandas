@@ -350,7 +350,7 @@ The telltale sign that you might get this warning is the use of double square br
 
 So, how should we actually set these values? It’s actually pretty straightforward:
 
-  **df_temps.loc[df_temps['temps'] < 0, 'temp']  = 0**
+    **df_temps.loc[df_temps['temps'] < 0, 'temp']  = 0**
                                      
 If you use this syntax for all of your assignments, you won’t ever see that dreaded SettingWithCopyWarning message. You’ll be able to use the **same syntax for retrieval and assignment**. And you can even be sure that things are running pretty efficiently.
 
