@@ -354,4 +354,222 @@ So, how should we actually set these values? It’s actually pretty straightforw
                                      
 If you use this syntax for all of your assignments, you won’t ever see that dreaded SettingWithCopyWarning message. You’ll be able to use the **same syntax for retrieval and assignment**. And you can even be sure that things are running pretty efficiently.
 
-                                  
+## 3. Importing and exporting data
+
+**CSV, the non-standard standard**
+
+At its heart, CSV assumes that your data can be described as a two-dimensional table. The rows are represented as rows in the file, and the columns are separated by… well, they’re separated by commas, at least by default. CSV files are text files, which means that you can read (and edit) them without special tools.
+
+Rather than take a stand on how CSV files should be formatted, pandas tries to be open and flexible. When we read from a CSV file (with pd.read_csv) or write a data frame to CSV (with df.to_csv), you can choose from many, many parameters, each of which can affect the way in which it is written. Among the most common are:
+
+* sep, the field separator, which is (perhaps obviously) a comma by default, but can often be a tab ('\t')
+* header, whether there are headers describing column names, and on which line of the file they appear, which can be controlled by the header parameter
+* indexcol, which column, if any, should be set to be the index of our data frame
+* **usecols**, which columns from the file should be included in the data frame
+
+Why do we read CSV files with the pd.read_csv function, rather than with a method on an existing data frame? Because the goal of read_csv is to create (and return) a new data frame based on the contents of the CSV file, not to modify or update the contents of an existing one.
+
+Most of the time, and especially when a CSV file has headers indicating the column names, I like to use those names in my call to read_csv. That makes the function call easier to read and debug. But when you want to rename the columns with the **names parameter**, you need to describe them numerically. Moreover, in order to avoid having the header row read as data, we need to indicate which row contains the header (0, in our case), effectively causing it to be ignored. like 
+
+    oil_filename = '../data/wti-daily.csv'
+
+    oil_df = pd.read_csv(oil_filename,
+
+                         parse_dates=[0],
+
+                         header=0,
+
+                         index_col=0,
+
+                         names=['date', 'oil'])
+                     
+my implementation which worked just fine is below, i think since i first used names parameter then parse_dates and index_col i am good:
+
+    df_oil = pd.read_csv(directory + 'wti-daily.csv',
+
+                        header = 0,
+
+                        names = ['date', 'oil'],
+
+                        parse_dates = ['date'],
+
+                        index_col = ['date'])
+
+
+**a side note from reuven on columns's names:**
+
+There is nothing inherently wrong with loading the data in this way, meaning keeping the original columns'names. However, when we use pd.query and pd.eval, it’s often annoying to have column names that includes spaces in them. Yes, we can use **backticks**, but it’s more convenient to give them names that’ll allow us to treat them as variables inside of the query string. So while there’s nothing technically wrong with loading the data as I’ve done here, I’ll then want to set the headers to be single-word names. I can do that by assigning a list of strings to df.columns:
+
+    df.columns = ['pid', 'state', 'ptype', 'make', 'color', 'feet'] 
+
+Now, you might be thinking that it would be more effective to set these names as part of the call to read_csv. After all, read_csv has a names parameter, which takes a list of strings that are assigned to the newly created data frame. However, things get tricky if we want to rename the columns (with names) and also load a subset of the columns (with usecols). That’s because passing a value to names means that you need to use those names, rather than the original ones from the file, when choosing columns in usecols. And you can only do that if you name all of the columns, which is rather annoying.
+
+Actually, there is another way to do it: You can specify which columns you want by passing a list of integers to usecols. pandas will select the columns at those indexes. You can then assign them names by passing a value to the names parameter. Here’s how I would do that:
+
+    df = pd.read_csv(filename,
+
+                    usecols=[1, 2, 3, 7, 33, 37],
+
+                    names=['pid', 'state', 'ptype', 'make', 'color', 'feet'])
+
+Will this work? Yes, it will, and in many cases, it might be the preferred way to go. However, I have two problems with it: First, I find it somewhat annoying to find the integer positions for the columns we want to load. And secondly, when I ran this code on my computer, I got the "low memory" warning that we’ve sometimes seen in previous examples. I thus decided to avoid the annoyance of finding the desired columns' numeric locations and the low-memory warning, and to use the two-step column renaming that appears in the solution.
+
+**compressed files can be directly impoted into pandas**
+
+You might have noticed that the files I’ve provided both have a .csv.gz suffix. This means that they are compressed with "gzip"—but you don’t need to uncompress them before loading, because **Pandas is smart enough to automatically do so when we run read_csv**.
+
+    institutions_filename = '../data/Most-Recent-Cohorts-Institution.csv.gz'
+
+    institutions_df = pd.read_csv(institutions_filename,
+
+                    usecols=['OPEID6'])
+
+
+# useful tip on data science
+
+When teaching data science, I often use the phrase "know your data." That’s because it’s important to really know as much about your data as you can before willy-nilly reading it into memory. You probably don’t want to load all of the columns into pandas. And you might want to specify the type of data that’s in each column, rather than let pandas just guess.
+
+Most data sets come with a "data dictionary," a file that describes the columns, their types, their meanings, and their ranges. It’s almost always worth your while to read a data dictionary when starting to analyze the data. In many cases, the dictionary will give you insights into the data.
+                                 
+### Three ways to optimize your Pandas data frame's memory usage
+
+df.info(memory_usage = 'deep') gives detailes
+                                       
+    1. choose your columns wisely using "usecols", df.columns gives me the name of columns 
+    2. choose dtypes appropriately 
+    3. remove rows that you don't need through cleaning 
+
+reference: reuven's youtube channel: https://www.youtube.com/watch?v=q3k3UrunY3M
+
+### memory_usage method
+
+We’ll talk more about this in future chapters, but the memory_usage method allows you to see how much memory is being used by each column in a data frame. It returns a series of integers, in which the index lists the columns and the values represent the memory used by each column. 
+
+    df.memory_usage()       
+
+### usecols
+
+The usecols parameter to pd.read_csv allows us to select which columns from the CSV file will be kept around. The parameter takes a list as an argument, and that list can either contain integers (indicating the numeric index of each column) or strings representing the column names. I generally prefer to use strings, since they’re more readable, and that’s what I did here.
+
+### url
+
+You can pass a URL to read_csv, and assuming that the URL returns a CSV file, pandas will return a new data frame. The rest of the parameters are the same as any other call to read_csv. The only difference is that you’re reading from a URL, rather than from a file on a filesystem.
+
+Why is this important and useful? Because there are numerous systems that produce hourly or hourly reports, publishing in CSV format to a URL that doesn’t change. If you retrieve data from that URL, then you’re guaranteed to get a CSV file reflecting the latest and greatest data. Thanks to the URL provisions of read_csv, you can include pandas in your daily reporting routine, summarizing and extracting the most important data from this report.
+
+In many cases, CSV files published to a URL will require authentication via a username and password. In some cases, sites allow you to include such authentication details in the URL. For those that don’t, you won’t be able to retrieve directly via read_csv. Rather, you’ll need to retrieve the data separately, perhaps using the excellent third-party **requests package**, and then create a StringIO with the contents of the retrieved data.
+
+What always amazes me about using pd.read_csv is how easy it is to read CSV data from a URL. Other than the fact that the data comes from the network, it works the same as reading from a file. Among other things, we can select which columns we want to read using the usecols parameter.
+                                       
+### tips on reading text file through pd.read_csv
+
+First just open it to see what is the field separator. Then see if you have any comments and if so see how the start of a comment line is mared, then you need to do header = None b/c it is not a csv file and so definitely doesn’t have headers. then you may want to pass names including your desired names for the dataframe you will be creating. 
+
+
+#### 1. sep
+CSV files are named for the default field separator, the comma. By default, pandas assumes that we have comma-separated values. It’s fine if we want to use another character, but then we’ll need to specify that in the sep keyword argument. If our separator is :, so we’ll pass sep=':' to read_csv.
+
+#### 2. comment
+read_csv lets us specify the string that marks the start of a comment line. By passing it comment=' ', we indicate that the parser should simply ignore such lines. if the comment starts with # then i need to pass comment='#'
+
+#### 3. header
+By default, read_csv assumes that the first line of the file is a header, containing column names. It also uses that first line to figure out how many fields will be on each line. **If a file contains headers, but not on the file’s first line, then you can set header to an integer value, indicating on which line read_csv should look for them**. But if your file is not really a CSV file then it definitely doesn’t have headers. Fortunately, you can tell read_csv that there is no header with header=None.
+
+#### 4. blank lines
+What about the blank lines? We actually got off pretty easy here, in that **read_csv ignores blank lines by default**. If you want to treat blank lines as NaN values, then you can pass skip_blank_lines=False, rather than accepting the default value of True.
+
+#### 5. names
+if your file is not a csv file and like it is a text file. In this case, if we don’t give any names, then the data frame’s columns will be labeled with integers, starting with 0. There’s nothing technically wrong with this, but it’s harder to work with data in this way. Besides, it’s easy enough to pass the names we want to give our columns, as a list of strings. 
+
+## How to specify more than one separator
+
+I’m often asked if we can specify more than one separator. For example, what if fields can be separated by either : or by ,? What do we do then?
+
+pandas actually has a great solution: If sep contains more than one character, then it is treated as a **regular expression**. So if you want to allow for either colons or commas, you could pass a separator of [:,]. If that looks reasonable to you, then congratulations: You probably know about regular expressions. If you don’t know them, then I strongly encourage you to learn them! Regular expressions are extremely useful to anyone working with text, which is nearly every programmer. I have a free tutorial on regular expressions using PPython at RegexpCrashCourse.com/, if you’re interested.
+
+The big downside to using regular expressions to handle field separators is that it requires the use of a Python-based CSV parser. By default, pandas uses a C-based parser, which runs faster and uses less memory. Consider whether you really need this functionality, and thus the performance hit that the Python-based parser creates.
+                                      
+### Reuven crash course on regular expressions 
+
+This is an E-mail course: Regexps crash course meaning in 14 days I am supposed to receive one email teaching me regexps along with some exercises.
+
+* day_1
+
+ -- Regexps have a reputation for being impossible to understand, even among experienced programmers; my goal is to show you that this doesn't have to be the case.
+ 
+ -- What we want, then, is a way to describe the patterns for which we're looking in the text, in a way that is compact and precise. And that's the job of regular expressions.
+
+ -- Regexps allow us to search for patterns within text.  Once we have found that pattern, we can do any number of things with it:
+* Print it out;
+* Use it as the basis for a search-and-replace operation;
+* Or, dig deeper into the match, extracting portions of it.
+
+ -- Regexps have been around for many years, but as the quantity of text produced becomes ever larger, the need for finding ways to search for patterns has become ever more urgent. 
+
+### html
+
+The **pd.read_html** function, like pd.read_csv, takes a file-like object or a URL. It assumes that it’ll encounter HTML-formatted text containing at least one table. It turns each table into a data frame, then returns a list of those data frames.
+      
+### JSON
+
+There’s no doubt that CSV is an important, useful, and popular format. But in some ways, it has been eclipsed by another format: JSON, aka "JavaScript Object Notation." **JSON allows us to store numbers, text, lists, and dictionaries in a text format that’s both readable and writable with a wide variety of programming languages**. Because it’s both easier to work with and smaller than XML, while also more expressive than CSV, it’s no surprise that JSON has become a common format for both storing and exchanging data. JSON has also become the standard format for Internet APIs, allowing us to access a variety of services in a cross-platform manner.
+
+Just as we can retrieve CSV-formatted data with pd.read_csv, we can retrieve JSON-formatted data with **pd.read_json**.
+      
+### excel file
+
+Also like read_csv, the read_excel method has index_col, usecols, and names parameters, allowing you to specify which columns should be used for the data frame, what they should be called, and whether one or more should be used as the data frame’s index.
+      
+### Dataframes and dtype
+
+In Chapter 1, we saw that every series has a dtype describing the type of data that it contains. We can retrieve this data using the dtype attribute, and we can tell pandas what dtype to use when creating a series using the dtype parameter when we invoke the Series class.
+
+In a data frame, each column is a separate pandas series, and thus has its own dtype. By invoking the **dtypes (notice the plural!)** method on our data frame, we can find out what the dtype is of each column. This information, along with additional details about the data frame, is also available by invoking the **info method** on our data frame.
+
+When we read data from a CSV file, pandas tries its best to infer the dtype of each column. Remember that CSV files are really text files, so pandas has to examine the data to choose the best dtype. It will basically choose between three types:
+
+* If the values can all be turned into integers, then it chooses int64.
+* If the values can all be turned into **floats—which includes NaN**—then it chooses float64.
+* Otherwise, it chooses object, meaning core Python objects.
+
+However, there are several problems with letting pandas analyze and choose the data in this way.
+
+First, while these default choices aren’t bad, they can be overly large for many values. We often don’t need 64-bit numbers, so choosing int64 or float64 will waste disk space unnecessarily.
+
+The second problem is much more subtle: If pandas is to correctly guess the dtype for a column, then it needs to examine all of the values in that column. But if you have millions of rows in a column, then that process can use a huge amount of memory. For this reason, read_csv reads the file into memory in pieces, examining each piece in turn and then creating a single data frame from all of them. You normally won’t know that this is happening; pandas does this in order to save memory.
+
+This can potentially lead to a problem, if it finds (for example) values that look like integers at the top of the file, and values that look like strings at the bottom of the file. In such a case, you end up with a dtype of object, and with values of different types. This is almost certainly a bad thing, and pandas warns you about this with a DtypeWarning. If you load the New York City taxi data from January 2020 into pandas without specifying usecols, then you might well get this warning—I often did, on my computer.
+
+One way to avoid this mixed-dtype problem is to tell pandas not to skimp on memory, and that it’s OK to examine all of the data. You can do that by passing a False values to the **low_memory parameter in read_csv.** By default, low_memory is set to True, resulting in the behavior that I’ve described here. But remember that setting low_memory to False might indeed use lots of memory, a potentially big problem if your dataset is large.
+
+Notice that I passing the low_memory=False keyword argument tells pandas that I had enough RAM on my computer that it could look through all of the rows in the data set, when trying to determine what dtype to assign to each column.
+
+**from chatGPT:**
+
+The low_memory parameter in pandas is used to control the memory usage when reading a large file. When set to True, pandas will attempt to read the file **in chunks**, which can **reduce the memory usage but may also slow down the read operation**. When set to False, pandas will read the entire file into memory at once, which can **speed up the read operation but may also consume a lot of memory.**
+
+By default, the low_memory parameter is set to True. If you have enough memory available and want to speed up the read operation, you can set low_memory to False. 
+
+**A better solution is to tell pandas that you don’t want it to guess the dtype, and that you would rather tell it explicitly. You can do that by passing a dtype parameter to read_csv, with a Python dictionary as its argument. The dict’s keys will be strings, the names of the columns being read from disk, and the values will be the data types you want to use.** It’s typical to use data types from pandas and NumPy, but if you specify int or float, then pandas will simply use np.int64 or np.float64. And if you specify str, then pandas will store the data as Python strings, assigning a dtype of object.
+
+Finally: It’s often tempting to set a dtype to be an integer value. But remember that **if the column contains NaN, then it cannot be defined as an integer dtype. Instead, you’ll need to read the column as floating-point data, remove or interpolate the NaN values, and then convert the column (using astype) to the integer type you want.**
+      
+### How to wisely choose the wisest dtype
+
+* Like for example for trip_distance, total_amount, and tip_amount it seems we do need float but how to choose its type like float64 is more appropriate or float16? you can take a look at the following table and see if the maximum number in your column is below the max value that can be represented by each dtype then that dtype is safe to use:
+      
+|int | |   |
+| -- | --|  -- |
+| dtype | range of values|  **max value**|
+| int8 | (-128 to 127)| 127 |
+| int16 | (-32768 to 32767)| 32_767 |
+| int32 | (-2147483648 to 2147483647)| 2_147_483_647 |
+| int64 | (-9223372036854775808 to 9223372036854775807)| 9223372036854775807 |
+
+
+|float | |   |
+|-- | --|  -- |
+|dtype | range of values|  **max value**|
+| float16 (half-precision floating-point) | (-65504 to 65504) | 65_504 |
+| float32 (single-precision floating-point) |(-3.4028235 x 10^38 to 3.4028235 x 10^38) | 3.4028235 x 10^38 |
+| float64 (double-precision floating-point) | (-1.79 x 10^308 to 1.79 x 10^308) | 1.79 x 10^308 |
