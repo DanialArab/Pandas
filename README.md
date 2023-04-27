@@ -622,13 +622,430 @@ As of this writing, the set_index method (along with many others in pandas) supp
 
 Thus while it might seem wasteful to call set_index and then assign its result back to df, this is the preferred, idiomatic way that we are to do things in pandas.
 
+### Working with multi-indexes
 
+Every data frame has an index, giving labels to the rows. We have already seen that we can use the loc accessor to retrieve one or more rows using the index. For example, I can say
+
+    df.loc['a']
+
+to retrieve all of the rows with the index value a. Remember that the **index doesn’t necessarily contain unique values**; retrieving loc['a'] might return a series of values representing a single row, but it also might return a data frame whose rows all have the index value a.
+
+This sort of index ofen serves us quite well. But there are many cases in which it’s not quite enough. That’s beacuse the world is full of hierarchical information, or information that is easier to process if we make it hierarchical.
+
+For example, every business wants to know their sales figures. But just getting a single number doesn’t let you analyze the information in a truly useful way. So you might want to break it down by product, in order to know how well each product is selling well, and which is contributing the most to your bottom line. (We saw a version of this in Exercise 8.) However, even that isn’t quite enough; you probably want to know how well each product is selling per month. If your store has been around for a while, you might want to break it down even further than that, finding the quantity of each product you’ve sold, per month, per year. A **multi-index** will let you do precisely that.
+
+I can create a multi-index by passing a **list of columns to set_index**:
+
+    df = df.set_index(['year', 'month'])
+
+Remember that when you’re creating a multi-index, you want **the most general part to be on the outside, and thus be mentioned first**. If you were to create a multi-index with dates, you would do it using year, month, and day, in that order. If you were to create a multi-index for your company’s sales data, you might use region, country, department, and product, in that order.
+
+With this in place, we can now retrieve in a variety of different ways. For example, I can get all of the sales data, for all products, in 2018:
+
+    df.loc[2018]
+
+I can get all sales data for just products A and C in 2018:
+
+df.loc[2018, ['A', 'C']]
+
+**Notice that I’m still applying the same rule as we’ve always used with loc—the first argument describes the row(s) we want, and the second argument describes the column(s) we want. Without a second argument, we get all of the columns.**
+
+I’ve got a multi-index on this data frame, which means that I can break the data down not just by year, but also by month. For example, what did it look like for all three products in June, 2019?
+
+    df.loc[(2019, 'Jun')]
+
+Notice that I’m still using square brackets with loc. However, the first (and only) argument is a tuple (i.e., round parentheses). **Tuples are typically used in a multi-index situation when you want to specify a specific combination of index levels and values**. For example, I’m looking for 2019 and Jun—the outermost level and the inner level—so I use the tuple (2019, 'Jun'). I can, of course, retrieve the sales data just for producs A and C here, too:
+
+    df.loc[(2019, 'Jun'), ['A', 'C']]
+
+What if I want to see more than one year at a time? For example, let’s say that I want to see all data for 2019 and 2020. I can say:
+
+    df.loc[[2019, 2020]]
+
+And if I want to see all data for 2019 and 2020, but only products B and C?
+
+    df.loc[[2019, 2020], ['B', 'C']]
+
+Another way to write this is by using a "slice":
+
+    df.loc[2019:2020, ['B', 'C']]
+
+Equivalently, you can use the slice builtin function for the same effect:
+
+    df.loc[slice(2019,2020), ['B', 'C']]
+
+What if I want to get all of the data from June in both 2019 and 2020? It’s going to be a bit complicated:
+
+* I use square brackets with loc
+* The first argument in the square brackets describes the rows I want—and I want all columns, so there won’t be a second argument
+* I want to select multiple combinations from the multi-index, **so I’ll need a list**
+* Each year-month combination will be a separate tuple in the list.
+The result is:
+
+    df.loc[[(2019, 'Jun'), (2020, 'Jun')]]
+
+What if I want to look at all of the values that took place in June, July, or August, across all three years? We could, of course, do it manually:
+
+    df.loc[[(2018, 'Jun'), (2018, 'Jul'), (2018, 'Aug'),
+            (2019, 'Jun'), (2019, 'Jul'), (2019, 'Aug'),
+            (2020, 'Jun'), (2020, 'Jul'), (2020, 'Aug')]]
+
+This worked well, but it seems a bit wordy. Isn’t there another way that we could do this? The answer is "yes." Intuitively, we might guess that we can tell pandas we want all of the years (2018, 2019, and 2020), and only three months (Jun, Jul, and Aug). We could, thus, write the following:
+
+    df.loc[([2018, 2019, 2020], ['Jun', 'Jul', 'Aug'])]
+
+**But this won’t work!** And it’s rather surprising and confusing to find that it doesn’t work, when it seems so obvious and intuitive, given everything else we know about pandas. So, what’s missing? **An indicator of which columns we want,** what’s what:
+
+    df.loc[([2018, 2019, 2020], ['Jun', 'Jul', 'Aug']), ['A', 'B', 'C']]
+
+**While the second argument (i.e., a selection of columns) is generally optional when using loc, here it isn’t: You need to indicate which column, or columns, you want, along with the rows. You can do it explicitly, as I did above, or you can use Python’s "slice" syntax:**
+
+    df.loc[([2018, 2019, 2020], ['Jun', 'Jul', 'Aug']), 'A':'B']
+
+If you want all of the columns, you can use a colon all by itself:
+
+    df.loc[([2018, 2019, 2020], ['Jun', 'Jul', 'Aug']), :]
+
+Assuming that the **index is sorted**, you can even select the years using a slice:
+
+    df.loc[(:, ['Jun', 'Jul', 'Aug']), 'A':'B']
+
+Oh, **wait—actually, you can’t do that here.** That’s because **Python only allows the colon within square brackets**. And we tried to use the colon within a tuple, which uses regular, round parentheses. However, we can use the builtin slice function with None as an argument for the same result:
+
+    df.loc[(slice(None), ['Jun', 'Jul', 'Aug']), 'A':'B']
+
+And sure enough, that works. You can think of slice(None) as a way of indicating to pandas that we are willing to have all values, as a wildcard.
+
+As you can see, loc is an extremely versatile tool, allowing us to retrieve from a multi-index in a variety of ways.
+
+As we have seen, setting the index can make it easier for us to create queries about our data. But sometimes our data is hierarchical in nature. That’s where the pandas concept of a "multi-index" comes into play. With a multi-index, you can set the index not just to be a single column, but multiple columns. Imagine, for example, a data frame containing sales data: You might want to have sales broken down by year, and then further broken down by region. Once you use the phrase "further broken down by," a multi-index is almost certainly a good idea.
+
+read_csv also has a **index_col** parameter. If we pass an argument to that parameter, then we can tell read_csv to do it all in one step—reading in the data frame, and setting the index to be the column that we request. However, it turns out that we can pass a **list of columns as the argument to index_col**, thus creating the multi-index as the data frame is collected. For example:
+
+
+    df = pd.read_csv(filename,
+                    usecols=['Year', 'State.Code', 'Total.Math', 'Total.Test-takers', 'Total.Verbal'],
+                    index_col=['Year', 'State.Code'])
+
+### Sorting by index
+
+When we talk about sorting data in pandas, we’re usually referring to sorting the **data**. For example, I might want to have the rows in my data frame sorted by price or by regional sales code. We’ll talk more about that kind of sorting in Chapter 6.
+
+But pandas lets us sort our data frames in an additional way: **Based on the index values**. We can do that with the method **sort_index**, which like so many other methods returns **a new data frame with the same content, but whose rows are sorted based on index values**. We can thus say:
+
+    df = df.sort_index()
+
+**If your data frame contains a multi-index, then the sorting will be done primarily along the first level, then along the second level, and so forth.**
+
+In addition to having some aesthetic benefits, **sorting a data frame by index can make certain tasks easier, or even possible.** For example, **if you try to select a slice of rows, pandas insists that the index will be sorted, in order to avoid the ambiguity.**
+
+If your data frame is unsorted and has a multi-index, then performing some operations might result in a warning:
+
+**PerformanceWarning: indexing past lexsort depth may impact performance**
+
+This is pandas trying to tell you that the combination of large size, multi-index, and an unsorted index are likely to cause you trouble. You can avoid the warning by sorting your data frame via its index.
+
+If you want to check whether a data frame is sorted, you can check this attribute:
+
+    df.index.is_monotonic_increasing
+
+Note that this is not a method, but is rather a boolean value. Also note that some older documentation and blogs mentions the method is_lexsorted, which has been deprecated in recent versions of pandas; you should instead be using is_monotonic_increasing.
+
+**point on inplace**
+You can invoke set_index with inplace=True. If you do this, then set_index will modify the existing data frame object, and will return None. But as with all other uses of inplace=True in pandas, the core developers strongly recommend against doing this. Instead, you should invoke it regularly (i.e., with a default value of inplace=False), and then assign the result to a variable—which could be the variable already referring to the data frame, as I’ve done here: df = df.sort_index()
+
+### critically important tip on sorting by index
+While we don’t necessarily need to sort our data frame by its index, certain pandas operations will work better if we do. Moreover, if we don’t sort the data frame, we might get the PerformanceWarning that I mentioned earlier in this chapter. So especially when we’re going to be doing operations with a **multi-index**, it’s a good idea to sort by the index at the get-go.
+
+### CRITICALLY important point i learned on my own and not mention explicitly in the book 
+
+when I have multi-indexes and want to specify let's say index at level 3 i cannot ignore the first two levels like in the following that does not work:
+
+    df_game.loc['Archery', ['Team', 'Medal']].value_counts()
+
+b/c here sport is the 3rd level index specified by 'Archery', I do need to specify indexes at levels 1 and 2 through slice(None), but i can safely ignore any other indexes after the one i specified (here the 3rd index level which was sport and specified with 'Archery'). the correct query is as follows: 
+
+    df_game.loc[(slice(None), slice(None), 'Archery'), ['Team', 'Medal']].value_counts()
+    
+### xs and IndexSlice methods
+
+#### xs
+
+As we have already seen, loc makes it pretty straightforward to retrieve data from our multi-indexed data frames. However, there are times when we might want to use a multi-index in a different kind of way. pandas provides us with a few other methods for doing so, one being xs and the other IndexSlice.
+
+Because multi-indexed data frames are both common and important, pandas provides a number of ways to retrieve data from them.
+
+Let’s start with xs, which lets us accomplish what we did in Exercise 23, namely find matches for certain levels within a multi-index. For example, one question in the previous exercise asked you to find the mean height of participants in the "Table Tennis Women’s Team" event from all years of the Olympics. **Using loc, we had to tell pandas to accept all values for year, all values for season, and all values for sport—in other words, we were only checking the fourth level of the multi-index, namely the event**. Our query looked like this:
+
+    df.loc[(slice(None), 'Summer' , slice(None), "Table Tennis Women's Team"), 'Height'].mean()
+
+Using xs, we could shorten that query to:
+
+    df.xs("Table Tennis Women's Team", level='Event').mean()
+
+You might have noticed that I actually lied a bit, when I said that we didn’t search by season. As you can see in the loc-based query, we actually did include that in our search. Fortunately, I can handle that by passing a list of levels to the level parameter, and a tuple of values as the first argument:
+
+    df.xs(('Summer', "Table Tennis Women's Team"), level=['Season', 'Event']).mean()
+
+Notice that **xs is a method, and is thus invoked with round parentheses. By contrast, loc is an accessor attribute, and is invoked with square brackets.** And yes, it’s often hard to keep track of these things.
+
+You can, by the way, use integers as the arguments to level, rather than names. I find column names to be far easier to understand, though, and encourage you to do the same.
+
+#### IndexSlice
+
+A more general way to retrieve from a multi-index is known as IndexSlice. Remember when I mentioned earlier that we cannot use : inside of round parentheses, and thus need to say slice(None)? Well, **IndexSlice solves that problem: It uses square brackets, and can use slice syntax for any set of values.**
+
+For example, I can say:
+
+    from pandas import IndexSlice as idx
+
+    df.loc[idx[1980:2020, :, 'Swimming':'Table tennis'], :]
+
+The above code allows us to select a range of values for each of the levels of the multi-index. No longer do we need to call the slice function. Now we can use the standard Python : syntax for slicing within each level. The result of calling IndexSlice (or idx, as I aliased it here) is a tuple of Python slice objects:
+
+**I cannot understand this:**
+
+    (slice(1980, 2020, None),
+     slice(None, None, None),
+     slice('Swimming', 'Table tennis', None))
+
+In other words, IndexSlice is syntactic sugar, allowing pandas to look and feel more like a standard Python data structure, even when the index is far more complex.
+
+### Great tip: 
+
+When you cannot get what you want with playing with loc, xs, and idx is a good sign of a need to consider changing the existing indexes and maybe setting new index using **set_index** and **reset_index** methods.
+
+### Pivot tables
+
+So far, we have seen how to use indexes to restructure our data, making it easier to retrieve different slices of the information that it contains, and thus answer particular questions more easily. But the questions we have been asking have all had a single answer. In many cases, we want to apply a particular aggregate function to many different combinations of columns and rows. One of the most common and powerful ways to accomplish this is with a "pivot table."
+
+A pivot table allows us to create a new table (data frame) from a subset of an existing data frame. Here’s the basic idea:
+
+* Our data frame contains **two columns that have categorical, repeating, non-hierarchical data**.
+* Our data frame has a third column that is numeric.
+* We then create a new data frame from those three columns, as follows:
+
+    * All of the unique values from the first categorical column become the **index, or row labels.**
+    * All of the unique values from the second categorical column become the **column labels.**
+    * Wherever the two categories match up, we get either **the single value where those two intersect, or the mean of all values where they intersect.**
+    
+It takes a while to understand how a pivot table works. But once you get it, it’s hard to un-see: You start to find uses for it everywhere.
+
+For example, remember the table we created earlier? I’m going to re-create it here (i reran the code in the cells below):
+
+    np.random.seed(0)
+    df = pd.DataFrame(np.random.randint(0, 100, [36, 3]),
+                  columns=list('ABC'))
+    df['year'] = [2018] * 12 + [2019] * 12 + [2020] * 12
+    df['month'] = 'Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec'.split() * 3
+    df
+
+This table shows the sales of each product per year and month. And you can certainly understand the data, if you look at it in a certain way. But what if we were interested in seeing sales figures for product A? It might make more sense, and be easier to parse, if we were to use the months (a categorical, repeating value) as the rows, the years (again, a categorical, repeating value) as the columns, and then the figures for product A as the values. We can create such a pivot table as follows:
+
+    df.pivot_table(index='month', columns='year', values='A')
+
+You might notice that the months in our resulting table are sorted in alphabetical order, which is unlikely to be the most useful way to present htem. We can fix this by telling the pivot_table method not to sort the rows, passing **sort=False** in our method call:
+
+    df.pivot_table(index='month', columns='year', values='A', sort=False)
+
+What if more than one row has the same values for year and month? **By default, pivot_table will then run the mean aggregation method on all of the values**. But if you prefer to use a different aggregation function, you can pass it as an argument to **aggfunc** in your call to pivot_table. For example, you can count the values in each intersection box by passing the np.size function:
+
+    df.pivot_table(index='month', columns='year', values='A', sort=False, aggfunc=np.size)
+
+Remember that a pivot table will have one row for each unique value in your first chosen column, and a column for each unique value in your second chosen column. If there are hundreds of unique values in either (or even worse, in both), then you could end up with a gargantuan (enormous) pivot table. This will not only be hard to understand and analyze, but will also consume large amounts of memory. Moreover, if your data isn’t very lean (see Chapter 5), then you might well find all sorts of junk values in your pivot table’s index and columns.
+
+The pivot tables are constructed based on **actual columns, and not the index**, and so when reading csv file to crfaete a df we’ll stick with the default, numeric index that pandas assigns to every data frame and I don't need to set index.
+
+**isin**
+
+we can use the isin method, which allows us to pass a list of possibilities, and get a True value whenever the 'Team' column is equal to one of those possible strings. In my experience, the isin method is one of those things that seems so obvious when you start to use it, but that is far from obvious until you know to look for it.
+
+I can thus keep only those countries in this way:
+
+    df = df[df['Team'].isin(['Great Britain', 'France', 'United States', 'Switzerland', 'China', 'India'])]
+
+**tips to crfeate a pivot table**
+
+With our data frame in place, we can now start to create some pivot tables, to examine our data from a new perspective. For example, here I was first asked to compare the average age of players for each team (across all sports) all years. As usual, when we’re creating pivot tables, we need to consider **what will be the rows, the columns, and the values**:
+
+* The rows (index) will be the unique values from the Year column
+* The columns will be the unique values from the Team column
+* The values themselves will be from the Age column
+
+Sure enough, we can then create our pivot table as follows:
+
+    pd.pivot_table(df, index='Year', columns='Team', values='Age')
 
 <a name="5"></a>
 ## 5. Cleaning data
 
+I’ve often heard data scientists say that **80 percent of their job involves cleaning data**. What does it mean to "clean data"? Here is a partial list:
+
+    * rename columns
+    * rename the index
+    * remove irrelevant columns
+    * split one column into two
+    * combine two or more columns into one
+    * remove non-data rows
+    * remove repeated rows
+    * remove rows with missing data (aka NaN)
+    * replace NaN data with a single value
+    * replace NaN data via interpolation
+    * standardize strings
+    * fix typos in strings
+    * remove whitespace from strings
+    * correct the types used for columns
+    * identify and remove outliers
+
+We have already discussed some of these techniques in previous chapters. But the importance of cleaning your data, and thus ensuring that your analysis is as accuraet is possible, cannot be overstated.
+
+### HOW MUCH IS MISSING?
+
+We’ve already seen, on a number of occasions, that data frames (and series) can contain NaN values. One question we often want to answer is: How many NaN values are there in a given column? Or, for that matter, in a data frame?
+
+**isnull**
+
+If you call isnull on a column, it returns a boolean series, one that has True where there is a NaN value, and False in other places. **You can then apply the sum method to the series, which will return the number of True values**, thanks to the fact that Python’s boolean values inherit from integers, and can be in place of 1 (True) and 0 (False) if you need:
+
+    s.isnull().sum()
+
+
+If you run isnull on a data frame, then you will get a new data frame back, with True and False values indicating whether there is a null value in that particular row-column combination. And of course, then **you can run sum on the resulting data frame, finding how many NaN values there are in each column**:
+
+    df.isnull().sum()
+
+    any and all methods
+
+Instead of summing the results of a call to isnull, you can also use the any and all methods, both of which return boolean values. any will return True for each row in which at least one of the values is True, and all will return True for each row in which all of the values are True. You can thus do the following:
+
+    df[df.isnull().all()]
+
+**info**
+
+Finally, the df.info method returns a wealth of information about the data frame on which it’s run, including
+
+* the name and type of each column, 
+* a summary of how many columns there are of each type, 
+* and the estimated memory usage. (We’ll talk more about this memory usage in Chapter 11.) 
+* If the data frame is small enough, then it’ll also show you how many null values there are in each column. However, this calculation can take some time. Thus, the df.info will only count null values below a certain threshold. If you’re above that threshold (the **pd.options.display.max_info_columns** option), then you’ll need to tell pandas explicitly to count, by passing **show_counts=True**:
+
+
+    df.info(show_counts = True)
+
+**isnull and isna**
+
+pandas defines both isna and isnull for **both series and data frames**. What’s the difference between them? **Actually, there is no difference**. If you look at the pandas documentation, you’ll find that they’re identical except for the name of the method being called. In this book, I’ll use isnull, but if you prefer to go with isna, then be my guest.
+
+Note that both of these are different from np.isnan, a method defined in NumPy, on top of which pandas is defined. I try to stick with the methods that pandas defines, which integrate better into the rest of the system, in my experience.
+
+Rather than using **~**, which **pandas uses to invert boolean series and data frames**, you can often use the **notnull** methods, for both series and data frame.
+
+    df.dropna()
+
+Normally, as we just saw, dropna removes **any row that contains any NaN value**. But we can tell it to look only in a subset of the columns, ignoring NaN values in any other columns. The result is a much cleaner query:
+
+    semi_good_df = df.dropna(subset=['Plate ID', 'Registration State',
+                                     'Vehicle Make', 'Street Name'])
+                                 
+note from chatGPT: The "dropna" method is used with the "subset" parameter set to a list of these column names, so the rows with NaN values in **any of these columns will be dropped**. The resulting "semi_good_df" DataFrame will only contain the rows where the values in all of these columns are not NaN.     
+
+    df.replace
+
+Replace values in one or more columns with other values like
+
+    no_blankplate_df = df.replace({'Plate ID':'BLANKPLATE'}, NaN)
+
+through the above code the Plate ID of the cars (in the column named 'Plate ID') with BLANKPLATE as a Plate ID were truned into NaN values. 
+
+    df_tit['home.dest'] = df_tit['home.dest'].replace(most_common_destinations) note: most_common_destinations is a pd.Series
+
+the above code replaces the values of the column named 'home.dest' in the df_tit dataframe: the values equivalent to index of the most_common_destinations series will be replaced with the corresponding values from the series's values.
+
+    df['Vehicle Color'] = df['Vehicle Color'].replace(colormap) note: colormap is a python dictionary 
+
+The call to replace returns a new series in which any value in df['Vehicle Color'] that matches a key in colormap is changed to be the corresponding value in colormap. 
+
+### shape vs. count
+
+If we want to see how many rows do we have in our df, we may use count or shape:
+
+**count ignores any NaN values**—so especially if we know that the data has missing values, we’ll get an unhelpful answer from count. Moreover, count will return a separate value for each column in the data frame. This can be useful if we want to compare the number of non-NaN values in each column. But if all we want to do is know the number of rows, regardless of content, retrieving shape is the way to go.
+
+Also note that **shape is an attribute that returns a tuple, not a method, so it doesn’t need parentheses after the word shape.**
+
+side note:
+
+Python’s f-strings have a special format code that, when put a **comma after : on an integer**, puts commas before every three digits:
+
+**print(f"NYC loses {(df_ticket.shape[0] - df_ticket_new.shape[0]) * 100:,} $")**
+
+### what to do with NaN
+
+when we have NaN values, we have a few options:
+
+* remove them
+* leave them
+* replace them with something else
+
+What is the right choice? The answer, of course, is "it depends." **If you’re getting your data ready to feed into a machine-learning model, then you’ll likely need to get rid of the NaN values, either by removing those rows or by replacing them with something else.** If you’re calculating basic sales information, then you might be OK with null values, since they aren’t going to affect your numbers too much. And of course, there are many variations on these.
+
+If you choose option 3, namely "replace them with something else," then that raises another question: What do you want to replace the NaN values with? A value that you have chosen? Something calculated from the data frame itself? Something calculated on a per-column basis? Any and all of these are appropriate under different circumstances.
+
+Deciding what we should do with each NaN-containing column depends on a variety of factors, i**ncluding the type of data that the column contains. Another factor is just how many rows have null values**. In two cases—fare and embarked we have one and two null rows, respectively. Given that our data frame has more than 1,300 rows, missing 1 or 2 of them won’t make any significant difference. I thus suggest that we remove those rows from the data frame.
+
+When it comes to the age column, though, we might want to consider our steps carefully. I’m inclined to use the mean here. But you could use the mode. You could also use a more sophisticated technique, using the mean from within a particular cabin. You could even try to get the complete set of ages on the Titanic, and choose from a random distribution built from that.
+
+**Using the mean age has some advantages: It won’t affect the mean age, although it will reduce the standard deviation (can be proved by std formula). It’s not necessarily wrong, even though we know that it’s not totally right, either**. In another context, such as sales of a particular product in an online store, replacing missing values with the mean can sometimes work, especially if you have similar products with a similar sales history.
+
+**some insights on wise replacement:**
+
+I want to set the home.dest column similarly to what I did with the age column—but instead of using the mean, I’ll use the mode (i.e., the most common value). I’ll do this for two reasons: First, because you can only calculate the mean from a numeric value, and the destination is a categorical/textual value. Secondly, because this means that given no other information, we might be able to assume that a passenger is going where most others are going. We might be wrong, but this is the least wrong choice that we can make. We could, of course, be a bit more sophisticated than this, choosing the mode of home.dest for all passengers who embarked at the same place, but we’ll ignore that for now.
+
+
+### Combining and splitting columns
+
+One common aspect of data cleaning involves creating one new column from several existing columns, as well as the reverse—creating multiple columns from a single existing column.
+
+Perhaps even more frequently, though, cleaning data involves taking one complex column, and turning it into one or more simpler columns. For example, you can imagine taking a column with a float64 dtype, and turning it into two int64 columns, one with the integer portion and one with the floating-point portion.
+
+**str accessor**:
+
+If s isn’t a single string, but rather a series that contains strings and if we want to retrieve the slice 3:5 from each of those strings, then we can use the str accessor on the series, followed by the slice method. The syntax is a bit different than what we used with Python strings, but it should still feel somewhat familiar:
+
+**s.str.slice(3,5)**
+
+The result of the above code is a new series of string objects, of the same length as s, containing two-element strings taken from indexes 3 and 4 of each row in s.
+
+It’s common to slice and dice the columns of a data frame in this way, retrieving only those parts that are of interest to us. This not only makes the problem easier to see, understand, and solve, but it also allows us to remove the original (larger) column, saving memory and improving computation speed.
+
+
+point:
+
+if some of the values of a dataframe's column contain characters other than digits or some of the values are NaN, **which as floating-point values, cannot be coerced into integers**, i cannot change the dtype of that column through the following code:
+
+df['age'] = df['age'].astype(np.int64)
+
+So here first i need to take care of the above two issues (using isdigit, isnull, dropna etc.) then run the above code.
+
+note on df = df.dropna(subset=['age']): 
+
+Notice that I’m once again using the subset parameter. Not that there are any rows in the index with NaN values, **but it’s always a good idea to be specific, just in case.**
+
+### Inconsistent data
+
+Missing data is a common issue that you’ll need to deal with when importing data sets. But equally common is inconsistent data, when the same value is represented by a number of different values.
+
+Thus, a big part of cleaning real-world data involves making it more consistent—or to use a term from the world of databases, **"normalizing"** it.
+
+### Summary
+
+Cleaning data is one of the most important parts of data analysis, although it’s not very glamorous. In this chapter, we saw that effective cleaning of data **requires not just knowing the techniques, but also applying judgment**—knowing when you can allow null or duplicate values, and then what you should do with them. pandas comes with a wide variety of tools that we can use in cleaning our data, from removing NaN values to replacing them, to replacing existing values, to running custom functions on each row in a series or data frame. The techniques that we explored in this chapter, along with the interpolate method that we saw before, are important tools in your data-cleaning toolbox, and will likely come up in many of the projects you work on.
+
+
 <a name="6"></a>
 ## 6. Grouping, joining, and sorting
+
+HERE
 
 <a name="7"></a>
 ## 7. Midway project
