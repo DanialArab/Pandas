@@ -198,15 +198,15 @@ pandas actually provides us with a number of techniques for setting values. My p
 
 If I want to retrieve row a and c and columns v and y: 
 
-  **df.loc[['a', 'c'], ['x', 'y']]**
+    df.loc[['a', 'c'], ['x', 'y']]
 
 I can describe our rows using a boolean index. That is, we can create a boolean series using a conditional operator (e.g., < or ==), and apply it to the rows and/or the columns. For example, I can find all of the rows in which x is greater than 200:
 
-  **df.loc[df['x']>200]**
+    df.loc[df['x']>200]
 
 I can then add a second value boolean index, after the comma, indicating which columns we want: 
 
-  **df.loc[df['x']>200, df.loc['c'] > 400]**
+    df.loc[df['x']>200, df.loc['c'] > 400]
 
 The above expression will return all of those rows from df in which column x was greater than 200, and all those columns from df in which row c was greater than 400.
 
@@ -217,19 +217,19 @@ Of course, our conditions can be far more complex than these. But as long as you
 
 If I want to set all of the values in row b, where column c is even, to new values, then I can assign a list (or NumPy array, or pandas series) of three items, matching the three I get back from the query:
 
-  **df.loc['b', df.loc['c'] % 2 == 0] = [123, 456, 789]**
+    df.loc['b', df.loc['c'] % 2 == 0] = [123, 456, 789]
 
 I can also assign a data frame or 2-dimensional NumPy array to any two-dimensional selection. For example, here I’ll assign the float 1 to 12 different elements of df:
 
-  **df.loc[df['v'] > 400, df.loc['d'] > 400] = np.ones(12).reshape(4,3)**
+    df.loc[df['v'] > 400, df.loc['d'] > 400] = np.ones(12).reshape(4,3)
 
 We can broadcast a scalar values to any of the above. For example:
 
-    **df.loc[df['v'] > 400, df.loc['d'] > 400] = 987**
+    df.loc[df['v'] > 400, df.loc['d'] > 400] = 987
 
 Finally, if your data frame’s columns are not of the same dtype, then you might encounter a SettingWithCopyWarning when you replace an existing column with a new set of values. You can avoid trouble by using loc to assign to all rows and a particular column using :, as if we were working with a slice:
 
-**df.loc[:, 'd'] = df['d'].astype(np.float16)**
+    df.loc[:, 'd'] = df['d'].astype(np.float16)
 
 The above code will replace the current values of column d with new values, all of them having a dtype of float16.
 
@@ -243,11 +243,11 @@ The result of pd.concat is a new data frame.
 
 Next, I asked you to ensure that the new data frame (the one after concatenation)’s index doesn’t contain duplicate values—something that is almost certainly the case at this point, given that we created df from two previous data frames. You can actually check to see if a data frame’s index contains repeated values with the code
 
-**df_ny_taxi_2020.index.is_unique**
+    df_ny_taxi_2020.index.is_unique
 
 If this returns True, then the values are already unique. If not, then some Seaborn plots will give you errors. We could renumber the index on our own, but why work so hard, when pandas includes this functionality? We can just say:
 
-**df_ny_taxi_2020 = df_ny_taxi_2020.reset_index(drop=True)**
+    df_ny_taxi_2020 = df_ny_taxi_2020.reset_index(drop=True)
 
 By passing drop=True, we tell reset_index not to make the just-ousted index column a regular column in the data frame, but rather to drop it entirely.
 
@@ -256,22 +256,22 @@ The traditional way to select rows from a data frame, as we have seen, is via a 
 
 The basic idea behind query is simple: We provide a **string** that pandas turns into a full-fledged query. We get back a filtered set of **rows** from the original data frame. For example, let’s say that I want all of the rows in which the column v is greater than 300. Using a traditional boolean index, I would write:
 
-  **df[df['v'] >300]**
+    df[df['v'] >300]
 
 Using query, I can instead write:
 
-  **df.query('v > 300')**
+    df.query('v > 300')
 
 
 These two techniques return the same results. When using query, though, we can name columns without the clunky square brackets, or even the dot notation. It becomes easier to understand.
 
 What if I want to have a more complex query, such as where column v is greater than 300 and column w is odd? We can write it as follows:
 
-  **df.query('v > 300 & w % 2 ==1') **
+    df.query('v > 300 & w % 2 ==1') 
 
 It’s not necessary, but I still like to use parentheses to make the query a bit more readable:
 
-  **df.query('(v > 300) & (w % 2 == 1)')**
+    df.query('(v > 300) & (w % 2 == 1)')
 
 Note that query cannot be used on the left side of an assignment.
 
@@ -305,7 +305,7 @@ In NumPy, we typically search for NaN values with the **isnan** function. pandas
 
 Both of these methods return a **new series or data frame**, rather than modifying the original object. However, the new object you get back might not have copied the data, which means that assigning to it might produce the famous, dreaded SettingWithCopyWarning. If you plan to modify the series or data frame that you get back from df.dropna, you should probably invoke the copy method, just to be sure:
 
-**df = df.dropna().copy()**
+    df = df.dropna().copy()
 
 This ensures that you can then modify df without having to suffer from that warning.
 
@@ -334,7 +334,7 @@ When we call df.interpolate, it returns a new data frame. In theory, all of the 
 
 If you’re like many pandas users, then you might have thought about things like this:
 
-  	**df_temps[df_temps['temp'] < 0]['temp'] = 0**
+  	  df_temps[df_temps['temp'] < 0]['temp'] = 0
 
 Logically, this makes perfec sense. There’s just one problem: You cannot know in advance if it will work. That’s because pandas does a lot of internal analysis and optimization when it’s putting together our queries. You thus cannot know if your assignment will actually change the temp column on df, or—and this is the important thing—if pandas has decided to cache the results of your first query, applying ['temp'] to that cached, internal value rather than to the original one.
 
@@ -350,7 +350,7 @@ The telltale sign that you might get this warning is the use of double square br
 
 So, how should we actually set these values? It’s actually pretty straightforward:
 
-    **df_temps.loc[df_temps['temps'] < 0, 'temp']  = 0**
+    df_temps.loc[df_temps['temps'] < 0, 'temp']  = 0
                                      
 If you use this syntax for all of your assignments, you won’t ever see that dreaded SettingWithCopyWarning message. You’ll be able to use the **same syntax for retrieval and assignment**. And you can even be sure that things are running pretty efficiently.
 
