@@ -15,7 +15,25 @@ Below is the summary of my notes from the book:
 3. [Importing and exporting data](#3)
 
 4. [Indexes](#4)
-5. 
+
+5. [Cleaning data](#5)
+
+6. [Grouping, joining, and sorting](#6)
+
+7. [Midway project](#7)
+
+8. [Strings](#8)
+
+9. [Dates and times](#9)
+
+10. [Visualization](#10)
+
+11. [Performance](#11)
+
+12. [Final project](#12)
+
+
+
 <a name="1"></a>
 ## 1. Pandas Series
 
@@ -603,3 +621,30 @@ We have already seen that if we want to retrieve rows from a data frame that mee
 As of this writing, the set_index method (along with many others in pandas) supports the **inplace parameter**. If you call set_index and pass inplace=True, then the method will return None, and will modify the dataframe. The core pandas developers have warned that this is a bad idea, because it makes incorrect assumptions about memory and performance. There is no benefit to using inplace=True. As a result, the inplace parameer is likely to go away in a future version of pandas.
 
 Thus while it might seem wasteful to call set_index and then assign its result back to df, this is the preferred, idiomatic way that we are to do things in pandas.
+
+
+
+<a name="5"></a>
+5. Cleaning data
+
+<a name="6"></a>
+6. Grouping, joining, and sorting
+
+<a name="7"></a>
+7. Midway project
+
+<a name="8"></a>
+8. Strings
+
+
+<a name="9"></a>
+9. Dates and times
+
+<a name="10"></a>
+10. Visualization
+
+<a name="11"></a>
+11. Performance
+
+<a name="12"></a>
+12. Final project
