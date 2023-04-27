@@ -573,3 +573,5 @@ Finally: It’s often tempting to set a dtype to be an integer value. But rememb
 | float16 (half-precision floating-point) | (-65504 to 65504) | 65_504 |
 | float32 (single-precision floating-point) |(-3.4028235 x 10^38 to 3.4028235 x 10^38) | 3.4028235 x 10^38 |
 | float64 (double-precision floating-point) | (-1.79 x 10^308 to 1.79 x 10^308) | 1.79 x 10^308 |
+
+      here
