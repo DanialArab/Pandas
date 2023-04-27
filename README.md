@@ -625,26 +625,26 @@ Thus while it might seem wasteful to call set_index and then assign its result b
 
 
 <a name="5"></a>
-5. Cleaning data
+## 5. Cleaning data
 
 <a name="6"></a>
-6. Grouping, joining, and sorting
+## 6. Grouping, joining, and sorting
 
 <a name="7"></a>
-7. Midway project
+## 7. Midway project
 
 <a name="8"></a>
-8. Strings
+## 8. Strings
 
 
 <a name="9"></a>
-9. Dates and times
+## 9. Dates and times
 
 <a name="10"></a>
-10. Visualization
+## 10. Visualization
 
 <a name="11"></a>
-11. Performance
+## 11. Performance
 
 <a name="12"></a>
-12. Final project
+## 12. Final project
