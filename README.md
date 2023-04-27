@@ -143,13 +143,13 @@ Note that the bin boundaries are **exclusive on the left, and inclusive on the r
 
 we can include the lower bound with passig **include_lowest = True** like
 
-df_nyc['trip_distance_group'] = pd.cut(df_nyc['trip_distance'],
+    df_nyc['trip_distance_group'] = pd.cut(df_nyc['trip_distance'],
 
-                                      bins = [0, 2, 10, df_nyc['trip_distance'].max()],
-                                      
-                                      labels = ['short', 'medium', 'long'],
-                                      
-                                      include_lowest = True)
+                                                bins = [0, 2, 10, df_nyc['trip_distance'].max()],
+
+                                                labels = ['short', 'medium', 'long'],
+
+                                                include_lowest = True)
 
 ### Summary
 
