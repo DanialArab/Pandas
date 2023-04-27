@@ -4,15 +4,18 @@ This repository documents my understanding of Pandas and contains my solutions (
 
 Pandas is all about analyzing data. And a major part of the analysis that we do in Pandas can be phrased as, **"Where this is the case, show me that."**
 
+Below is the summary of my notes from the book:
+
 # Table of content
 
 1. [Pandas Series](#1)
 
 2. [Pandas DataFrames](#2)
 
+3. [Importing and exporting data](#3)
 
-Below is the summary of my notes from the book:
-
+4. [Indexes](#4)
+5. 
 <a name="1"></a>
 ## 1. Pandas Series
 
@@ -363,6 +366,7 @@ So, how should we actually set these values? It’s actually pretty straightforw
                                      
 If you use this syntax for all of your assignments, you won’t ever see that dreaded SettingWithCopyWarning message. You’ll be able to use the **same syntax for retrieval and assignment**. And you can even be sure that things are running pretty efficiently.
 
+<a name="3"></a>
 ## 3. Importing and exporting data
 
 **CSV, the non-standard standard**
@@ -583,6 +587,7 @@ Finally: It’s often tempting to set a dtype to be an integer value. But rememb
 | float32 (single-precision floating-point) |(-3.4028235 x 10^38 to 3.4028235 x 10^38) | 3.4028235 x 10^38 |
 | float64 (double-precision floating-point) | (-1.79 x 10^308 to 1.79 x 10^308) | 1.79 x 10^308 |
 
+<a name="4"></a>
 ## 4. Indexes
 
 Every data frame has an index (describing the rows) and a list of columns. Indexes in Pandas are extremely flexible and powerful; an index can even be hierarchical, allowing us to query our data in sophisticated ways. Understanding how we can create, replace, and use indexes is a crucial part of working with Pandas. In this chapter, we’ll practice working with indexes in a variety of ways. We’ll also see how we can change a data frame’s index, and how we can use it to summarize our data in a **"pivot table."**
