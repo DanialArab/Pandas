@@ -28,9 +28,6 @@ Below is the summary of my notes from the book:
 
 10. [Performance](#10)
 
-11. [Final project](#11)
-
-
 
 <a name="1"></a>
 ## 1. Pandas Series
