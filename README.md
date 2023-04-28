@@ -2184,8 +2184,6 @@ In df.query, we can use the words **and** and **or**, rather than the **symbols 
 <a name="12"></a>
 ## 12. Final project
 
-# 12. Final project
-
 Here is what I’d like you to do:
 
 * 1. Create a data frame (institutions_df) from the college scorecard cohorts-institutions CSV file. You will only need to load the following columns: OPEID6, INSTNM, CITY, STABBR, FTFTPCTPELL, TUITIONFEE_IN, TUITIONFEE_OUT, ADM_RATE, NPT4_PUB, NPT4_PRIV, NPT41_PUB, NPT41_PRIV, NPT45_PUB, NPT45_PRIV, MD_EARN_WNE_P10, and C100_4.
