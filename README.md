@@ -1,4 +1,4 @@
-# Pandas_portfolio
+# Pandas
 
 This repository documents my understanding of Pandas and contains my solutions (the **jupyter notebook file named pandas.ipynb attached to this repo**) to 200 detailed exercises (50 main exercises along with 150 beyond exercises) from the book written by Reuven Lerner (Pandas Workouts -- https://www.manning.com/books/pandas-workout)
 
