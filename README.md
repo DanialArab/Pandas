@@ -20,17 +20,15 @@ Below is the summary of my notes from the book:
 
 6. [Grouping, joining, and sorting](#6)
 
-7. [Midway project](#7)
+7. [Strings](#7)
 
-8. [Strings](#8)
+8. [Dates and times](#8)
 
-9. [Dates and times](#9)
+9. [Visualization](#9)
 
-10. [Visualization](#10)
+10. [Performance](#10)
 
-11. [Performance](#11)
-
-12. [Final project](#12)
+11. [Final project](#11)
 
 
 
@@ -1344,66 +1342,7 @@ The filter method for GroupBy is very similar to Python’s builtin filter funct
 The DataFrameGroupBy versions of filter and transform are, in my experience, among the most complex pieces of functionality that pandas provides. It might take you a while to think through what calculation you want to perform, and then to find the right way to express it in pandas.
 
 <a name="7"></a>
-## 7. Midway project
-
-Here is what I’d like you to do:
-
-* 1. Load the CSV file with results from the Python survey into a data frame. Let’s call that py_df.
-* 2. Turn the columns into a multi-index. How you do this depends on the column:
-
-    * Most of the columns have the form first.second.third, with two or more words separated by . characters. Divide the column name into two parts, one before the final . and one after. The multi-index column for this example would then be ('first.second', 'third'). If there were only two parts, it would be ('first', 'second').
-    * In the case of about 20 columns, the top level should be general, and the second level should be the original column name. The columns you should treat this way are:
-
-        * age,
-        * are.you.datascientist,
-        * is.python.main,
-        * company.size,
-        * country.live,
-        * employment.status,
-        * first.learn.about.main.ide,
-        * how.often.use.main.ide,
-        * is.python.main,
-        * main.purposes
-        * missing.features.main.ide
-        * nps.main.ide,
-        * python.version.most,
-        * python.years,
-        * python2.version.most,
-        * python3.version.most,
-        * several.projects,
-        * team.size,
-        * use.python.most,
-        * years.of.coding
-
-    * Use the function pd.MultiIndex.from_tuples to create the multi-index, and then reassign it back to df.columns. (Hint: A function, along with a Python for loop or list comprehension, will come in handy here.)
-    
-* 3. Sort the columns, such that they’re in alphabetical order. (This isn’t technically necessary, but it makes the data easier to see and understand.)
-* 4. Which 10 IDEs were most commonly listed as the main editor (i.e., in the ide column)?
-* 5. Which 10 other programming languages (other.lang) are most commonly used by Python developers?
-* 6. According to the Python survey, what proportion of Python developers have each level of experience?
-* 7. Which country has the greatest number of Python developers with 11+ years of experience?
-* 8. Which country has the greatest proportion of Python developers with 11+ years of experience?
-* 9. Now load the Stack Overflow data into a data frame. Let’s call that so_df.
-* 10. Show the average salary for different types of employment. Contractors and freelancers like to say that they earn more than full-time employees. What does the data here show us?
-* 11. Create a pivot table in which the index contains countries, the columns are education levels, and the cells contain the average salary for each education level per country.
-* 12. Create this pivot table again, only including countries in our OECD subset. In which of these countries does someone with an associate degree earn the most? In which of them does someone with a doctoral degree earn the most?
-* 13. Remove rows from so_df in which LanguageHaveWorkedWith is NaN.
-* 14. Remove rows from so_df in which Python isn’t included as a commonly used language (LanguageHaveWorkedWith). How many rows remain?
-* 15. Remove rows from so_df in which YearsCode is NaN. How many rows remain?
-* 16. Replace the string value Less than 1 year in YearsCode with 0. Replace the string value More than 50 years with 51.
-* 17. Turn YearsCode into an integer column.
-* 18. Create a new column in so_df, called experience, which will categorize the values in the YearsCode. Values can be:
-
-        * Less than 1 year
-        * 1–2 years
-        * 3–5 years
-        * 6–10 years
-        * 11+ years
-        
-* 19. According to the Stack Overflow survey, what proportion of Python developers have each level of experience? # Create a data frame in which the index contains the level of experience, and the two columns are the proportion of Python developers with that level from each of the two surveys. Would you say that the Stack Overflow respondents are less experienced, more experienced, or the same as those in the Python community survey?
-
-<a name="8"></a>
-## 8. Strings
+## 7. Strings
 
 It turns out that pandas is also well equipped to handle text. It does this not by storing string data in NumPy, but rather by using full-fledged string objects, either those that come with Python or (more recently) a pandas-specific string class that reduces both ambiguity and errors. (I’ll have more to say about these two string types, and when to use each one, later in the chapter.) In either case, we have access to a wide variety of methods that we can apply to these strings, normally via the **str accessor.**
 
@@ -1481,8 +1420,8 @@ df['LanguageHaveWorkedWith'].str.get_dummies(sep=';')
 
 * i belive it is kind of like one hot encoding in ML. chatGPT thoughts on my understanding:  Yes, that's correct. get_dummies is a method in the pandas library in Python that is used to perform one-hot encoding. One-hot encoding is a technique used to represent categorical variables as numerical data, so that they can be used as input to machine learning algorithms.
 
-<a name="9"></a>
-## 9. Dates and times
+<a name="8"></a>
+## 8. Dates and times
 
 Both the Python language and pandas handle time data with two different data structures: A **"timestamp" data type (also known as a "datetime"** in many languages and systems) handles **specific points in time, one that you can point to using a calendar**. A timestamp happens once, and only once—when you were born, when your plane will be taking off, when you and your date will meet at a restaurant, or when the meeting was scheduled to end. You can describe a timestamp with a particular year, month, day, hour, minute, and second.
 
@@ -1692,8 +1631,8 @@ When we run resample, we tell it what time-period granularity we’ll want, givi
 
     df_wti[df_wti.index.is_quarter_end]
     
-<a name="10"></a>
-## 10. Visualization
+<a name="9"></a>
+## 9. Visualization
 
 The 900-pound gorilla in the world of Python data visualization is Matplotlib. There’s no doubt that Matplotlib is powerful—but it’s also overwhelming to many people. Fortunately, pandas provides a visualization API that allows us to create plots from our data without having to use Matplotlib explicitly. We thus get the best of both worlds—the ability to plot information in our data frame, without having to learn too much about Matplotlib’s API. However, if and when you need more power, Matplotlib is there, under the hood, available to anyone who wants to use it.
 
@@ -1937,8 +1876,8 @@ sns.displot(x='max_temp', data=df, hue='city', row='city')
 These are just some of Seaborn’s many capabilities. If you’re interested in seeing everything that Seaborn can do, I strongly recommend you check out the documentation at http://seaborn.pydata.org/. I’ve grown to really like the Seaborn approach to visualization—not only does it produce very nice-looking plots, but I find the API easier to understand and work with than many others.
 
 
-<a name="11"></a>
-## 11. Performance
+<a name="10"></a>
+## 10. Performance
 
 **good to knows**
 
@@ -2181,67 +2120,3 @@ However, focusing on speed before you’ve really thought hard about the problem
 
 In df.query, we can use the words **and** and **or**, rather than the **symbols & and |**, thanks to the **numexpr library**. After rewriting the queries in exercise 50b using these words instead of symbols i observed improvement in the speed!
 
-<a name="12"></a>
-## 12. Final project
-
-Here is what I’d like you to do:
-
-* 1. Create a data frame (institutions_df) from the college scorecard cohorts-institutions CSV file. You will only need to load the following columns: OPEID6, INSTNM, CITY, STABBR, FTFTPCTPELL, TUITIONFEE_IN, TUITIONFEE_OUT, ADM_RATE, NPT4_PUB, NPT4_PRIV, NPT41_PUB, NPT41_PRIV, NPT45_PUB, NPT45_PRIV, MD_EARN_WNE_P10, and C100_4.
-
-* 2. Load the CSV file for fields of study into another data frame (fields_of_study_df). Here, load the columns OPEID6, INSTNM, CREDDESC, CIPDESC, and CONTROL.
-
-* 3. What state has the greatest number of universities in this database?
-
-* 4. What city, in which state, has the greatest number of universities in this database?
-
-* 5. How much memory can we save if we set the CITY and STABBR columns in institutions_df to be categories?
-
-* 6. Create a histogram showing how many bachelor programs universities offer.
-
-* 7. Which university offers the greatest number of bachelor programs?
-
-* 8. Create a histogram showing how many graudate (master’s and doctoral) programs universities offer.
-
-* 9. Which university offers the greatest number of different graduate (master + doctoral) programs?
-
-* 10. How many universities offer bachelor’s degrees, but not master’s or doctorates?
-
-* 11. How many universities offer master’s and doctoral degrees, but not bachelors?
-
-* 12. How many institutions offer bachelor’s degrees whose name contains the term "Computer Science"?
-
-* 13. The CONTROL field describes the types of institutions in the database. How many of each type offer a computer-science bachelor’s-level degree program?
-
-* 14. Create a pie chart showing the different types of institutions that offer bachelor's CS degrees
-
-* 15. What are the minimum, median, mean, and maximum tuitions for an undergrad CS degree? (We’ll define this as a bachelor’s program with the phrase "Computer Science" in the name.) When comparing tuition, use TUITIONFEE_OUT for all schools.
-
-* 16. Describe the tuition again, but grouped by the different types of universities ("CONTROL")
-
-* 17. What is the correlation between admission rate and tuition cost? How would you interpret this?
-
-* 18. Create a scatter plot in which tuition is on the x axis, and admission rate is on the y axis, the median earnings after 10 years are used for colorizing, and we use the "Spectral" colormap. Where do the lowest-paid graduates show up on the graph?
-
-* 19. Which universities are in the top 25% of tuition, and also the top 25% of percentage with Pell grants? Print only the institution name, city, and state, ordered by institution name.
-
-* 20. NPT4_PUB indicates the average net price for public institutions (in-state tuition) and NPT4_PRIV for private institutions. NPT41_PUB and NPT45_PUB show the average price paid by people in the lowest income bracket (1) vs. the highest income bracket (5) at public institutions. NPT41_PRIV and NPT45_PRIV show the average price paid by people in the lowest income bracket (1) vs. the highest income bracket (5) at private institutions. In how many institutions does the bottom quintile receive money (i.e., is the value negative)?
-
-* 21. What is the average proportion that the bottom quintile pays vs. the top quintile, in public universities?
-
-* 22. What is the average proportion that the bottom quintile pays vs. the top quintile, in private universities?
-
-* 23. Let’s try to figure out which universities offer the best overall ROI (across all disciplines). What schools are in the cheapest 25%, but 10 years after graduation, students have the top 25% of salaries?
-
-* 24. How about private institutions?
-
-* 25. Is there a correlation between admission rates and completion rates? If a school is highly selective, are students more likely to graduate?
-
-* 26. Ten years after graduating, from what kinds of schools (private, for-profit, private non-profit, or public) do people earn, on average, the greatest amount?
-
-* 27. Do people who graduate from "Ivy Plus" schools earn more than the average private-school university graduate? If so, then how much more?
-
-* 28. Do people studying at universities in particular states earn, on average, more after 10 years?
-
-* 29. Create a bar plot for the average amount earned, per state, sorted by ascending pay
-
-* 30. Create a boxplot for the earnings by state
