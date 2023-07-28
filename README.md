@@ -1,6 +1,6 @@
 # Pandas
 
-This repository documents my understanding of Pandas and contains my solutions (the **jupyter notebook file named pandas.ipynb attached to this repo**) to 200 detailed exercises (50 main exercises along with 150 beyond exercises) from the book written by Reuven Lerner (Pandas Workouts -- https://www.manning.com/books/pandas-workout)
+This repository documents my understanding of Pandas and contains my solutions (the **Jupyter Notebook file named pandas.ipynb attached to this repo**) to 200 detailed exercises (50 main exercises along with 150 beyond exercises) from the book written by Reuven Lerner (Pandas Workouts -- https://www.manning.com/books/pandas-workout)
 
 Pandas is all about analyzing data. And a major part of the analysis that we do in Pandas can be phrased as, **"Where this is the case, show me that"** (Reuven Lerner).
 
@@ -9,24 +9,25 @@ Below is the summary of my notes from the book:
 # Table of content
 
 1. [Pandas Series](#1)
+   1. []
 
-2. [Pandas DataFrames](#2)
+3. [Pandas DataFrames](#2)
 
-3. [Importing and exporting data](#3)
+4. [Importing and exporting data](#3)
 
-4. [Indexes](#4)
+5. [Indexes](#4)
 
-5. [Cleaning data](#5)
+6. [Cleaning data](#5)
 
-6. [Grouping, joining, and sorting](#6)
+7. [Grouping, joining, and sorting](#6)
 
-7. [Strings](#7)
+8. [Strings](#7)
 
-8. [Dates and times](#8)
+9. [Dates and times](#8)
 
-9. [Visualization](#9)
+10. [Visualization](#9)
 
-10. [Performance](#10)
+11. [Performance](#10)
 
 
 <a name="1"></a>
