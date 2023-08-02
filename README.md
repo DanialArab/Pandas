@@ -20,7 +20,7 @@ Below is the summary of my notes from the book:
    3. [Retrieving a series individual elements using textual vs. positional indexes](#12)
    4. [Selecting values using mask/boolean index in pandas](#13)
    5. [Repeated values for index in pandas series](#14)
-   6. [Fancy indexing] (#15)
+   6. [Fancy indexing](#15)
    7. [Summary](#16)
 2. [Pandas DataFrames](#2)
 
