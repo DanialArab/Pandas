@@ -17,9 +17,9 @@ Below is the summary of my notes from the book:
       6. [pd.read_csv()](#9)
       7. [value_counts()](#10)
       8. [pd.cut()](#11)
-   3. [Retrieving a series individual elements using textual vs. positional indexes]
-   4. [Repeated values for index in pandas series]
-   5. [Fancy indexing] 
+   3. [Retrieving a series individual elements using textual vs. positional indexes](#12)
+   4. [Repeated values for index in pandas series](#13)
+   5. [Fancy indexing] (#14)
 2. [Pandas DataFrames](#2)
 
 4. [Importing and exporting data](#3)
@@ -66,17 +66,17 @@ Pandas is all about analyzing data. And a major part of the analysis that we do 
 + It is a method that returns the index of the first occurrence of the maximum value in a one-dimensional array or a pandas Series. It is similar to the idxmax() method, but it returns the index position of the maximum value rather than the index label.
 
 
-<a name="5"></a>
+<a name="6"></a>
 #### idxmax() 
 
 + It is a pandas method that returns the label of the first occurrence of the maximum value in a one-dimensional array or a pandas Series. It is similar to the argmax() function, but it returns the index label of the maximum value rather than the index position.
 
-<a name="6"></a>
+<a name="7"></a>
 #### round()
 
 + The "round" method, when given a positive integer argument, rounds numbers after the decimal point. When given a negative integer argument, it rounds numbers *before* the decimal point!
 
-<a name="7"></a>
+<a name="8"></a>
 #### astype ()
 
 Data types in Pandas: 
@@ -89,7 +89,7 @@ Normally, pandas guesses the dtype based on the data you pass it at creation. Yo
 
 What if you want to change the dtype of a series once you’ve already created it? You can’t set the dtype attribute; it’s read only. Instead, you will need to create a new series based on the existing one by invoking the **astype method.**
 
-<a name="8"></a>
+<a name="9"></a>
 #### pd.read_csv()
 
 It is more typically used to create a data frame, but if we provide it with a file that contains only one data point per line, and pass a True value to the **squeeze parameter**, then we’ll get a series back. 
@@ -98,7 +98,7 @@ It is more typically used to create a data frame, but if we provide it with a fi
 
 I also set the header parameter to be None, indicating that the first line in the file should not be taken as a column name, but rather is data to be included in our calculations. This will result in the series having a name value of 0, which we can safely ignore.
 
-<a name="9"></a>
+<a name="10"></a>
 #### value_counts ()
 
 It is a series method that is one of the favorite ones. If you apply value_counts to the series s, you get back a new series whose keys are the distinct values in s, and whose values are integers indicating how often each value appeared. 
@@ -112,7 +112,7 @@ If we’re interested in the percentages, not in the raw values, value_counts ha
       pass_count.value_counts(normalize = True)[['1', '6']]
 
 
-<a name="10"></a>
+<a name="11"></a>
 #### pd.cut()
 
 The pd.cut method allows us to **set numeric boundaries, and then to cut a series into parts (known as "bins") based on those boundaries.** Moreover, it can assign labels to each of the bins.
@@ -140,7 +140,7 @@ we can include the lower bound with passig **include_lowest = True** like
                                                 include_lowest = True)
 
 
-<a name="11"></a>
+<a name="12"></a>
 ### Retrieving a series individual elements using textual vs. positional indexes
 
 + Use .iloc for the numeric index, and .loc for the custom textual index. You don’t need to use .iloc or .loc when you **retrieve slices**, however.
