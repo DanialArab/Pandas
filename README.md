@@ -185,7 +185,7 @@ Yes, unlike the index in a Python string, list, or tuple which are unique, as ar
 
 We’ve seen that I can retrieve the item at index 2 with s.loc[2], or the item at index 4 with s.loc[4]. But I can actually retrieve both of them at the same time with what’s known as "fancy indexing" **—passing a list, series, or similar iterable inside of the square brackets**. For example:
 
-s.loc [[2, 4]]
+      s.loc [[2, 4]]
 
 The outer square brackets indicate that we want to retrieve from s using loc. And the inner square brackets indicate that we want to retrieve more than one item. pandas returns a series, keeping the orignal indexes and values.
 
