@@ -9,7 +9,12 @@ Below is the summary of my notes from the book:
 # Table of content
 
 1. [Pandas Series](#1)
-   1. []
+   1. [Series Fundamentals](#1)
+   1. [Series methods](#1)
+      1. [sort_values](#1)
+      2. [astype](#1)
+      3. [value_counts ](#1)
+      4. [pd.cut](#1)
 
 3. [Pandas DataFrames](#2)
 
