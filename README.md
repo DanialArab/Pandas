@@ -21,6 +21,7 @@ Below is the summary of my notes from the book:
    4. [Selecting values using mask/boolean index in pandas](#13)
    5. [Repeated values for index in pandas series](#14)
    6. [Fancy indexing] (#15)
+   7. [Summary](#16)
 2. [Pandas DataFrames](#2)
 
 4. [Importing and exporting data](#3)
@@ -153,7 +154,6 @@ we can include the lower bound with passig **include_lowest = True** like
    +  Most of the time, I prefer to use textual indexes in pandas, because they’re easier to understand, and make the code more readable. But there is a cost: In some simple benchmarking that I performed, I found that it took Pandas twice as long to get the text-based slice as the number-based slice. If you find that your Pandas analysis is taking a long time, it might be worthwhile to try using positional indexes.
 
 
-
 <a name="13"></a>
 ###  Selecting values using mask/boolean index in pandas
 
@@ -174,18 +174,14 @@ This technique is worth learning and internalizing, because it’s both powerful
 
 Yes, unlike the index in a Python string, list, or tuple which are unique, as are the keys in a Python dictionary, the series index can have repeated values—not just integers, but also strings (as in this example) and even other data structures, such as times and dates (as we’ll see in chapter 9). Normally, when we retrieve a value from a series via loc, we expect to get a single value back. But if the index is repeated, then we will get back multiple values. And in pandas, multiple values will be returned as a series.
 
-**note**:
+**notes**:
 
-This means that when you retrieve s.loc[i], for a given index value, you can’t know in advance whether you will get a single, scalar value (if the index occurs only once) or a series (if the index occurs multiple times). This is another case in which you need to know your data, to know what type of value you’ll get back.
-
-
-from chatGPT:
-
-In pandas, the diff() function can be used to calculate the difference between consecutive elements in a Series. This function can also take an optional argument, periods, which specifies the number of periods to shift for the differences to be taken. By default, periods is set to 1.
++ This means that when you retrieve s.loc[i], for a given index value, you can’t know in advance whether you will get a single, scalar value (if the index occurs only once) or a series (if the index occurs multiple times). This is another case in which you need to know your data, to know what type of value you’ll get back.
++ In pandas, the diff() function can be used to calculate the difference between consecutive elements in a Series. This function can also take an optional argument, periods, which specifies the number of periods to shift for the differences to be taken. By default, periods is set to 1.
 
 
 <a name="15"></a>
-###  FANCY INDEXING
+###  Fancy indexing
 
 We’ve seen that I can retrieve the item at index 2 with s.loc[2], or the item at index 4 with s.loc[4]. But I can actually retrieve both of them at the same time with what’s known as "fancy indexing" **—passing a list, series, or similar iterable inside of the square brackets**. For example:
 
@@ -193,8 +189,7 @@ s.loc [[2, 4]]
 
 The outer square brackets indicate that we want to retrieve from s using loc. And the inner square brackets indicate that we want to retrieve more than one item. pandas returns a series, keeping the orignal indexes and values.
 
-
-
+<a name="16"></a>
 ### Summary
 
 In this chapter, we saw that a pandas series provides us with some powerful tools to analyze data. Whether it’s the index, reading data from files, calculating descriptive statistics, retrieving values via fancy indexing, or even categorizing our data via numeric boundaries, we were able to do quite a lot.
