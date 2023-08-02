@@ -1,6 +1,6 @@
 # Pandas
 
-This repository documents my understanding of Pandas and contains <a href="https://github.com/DanialArab/Pandas/blob/master/pandas.ipynb">my solutions</a> to 200 detailed exercises (50 main exercises along with 150 beyond exercises) from the book written by Reuven Lerner <a href="https://www.manning.com/books/pandas-workout">Pandas Workouts</a>
+This repository documents my understanding of Pandas and contains <a href="https://github.com/DanialArab/Pandas/blob/master/pandas.ipynb">my solutions</a> to 200 detailed exercises (50 main exercises along with 150 beyond exercises) from the book written by Reuven Lerner <a href="https://www.manning.com/books/pandas-workout">Pandas Workouts</a>.
 
 (the **Jupyter Notebook file named pandas.ipynb attached to this repo**) 
 
