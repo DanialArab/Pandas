@@ -127,7 +127,7 @@ Notice that pd.cut is not a series method, but rather a function in the top-leve
 
 Note that the bin boundaries are **exclusive on the left, and inclusive on the right.** In other words, by specifying that the "medium" bin is between 2 and 10, that means >2 but <=10. The result of this call to pd.cut is a series of the same length as s, but with the labels replacing the values
 
-**good point:**
+**A good point:**
 
 we can include the lower bound with passig **include_lowest = True** like
 
@@ -140,24 +140,16 @@ we can include the lower bound with passig **include_lowest = True** like
                                                 include_lowest = True)
 
 
-### **Retrieving** a series individual elements using textual vs. positional indexes:
+<a name="11"></a>
+### Retrieving a series individual elements using textual vs. positional indexes
 
-  -- Use .iloc for the numeric index, and .loc for the custom textual index. You don’t need to use .iloc or .loc when you **retrieve slices**, however.
-  
-  
-* Some notes on .iloc and .loc accessor to retreive values:
++ Use .iloc for the numeric index, and .loc for the custom textual index. You don’t need to use .iloc or .loc when you **retrieve slices**, however.
++ Some notes on .iloc and .loc accessor to retreive values:
 
-  -- Instead of using s[i] it is generally better to use s.iloc[i] to retrieve positional numeric index i from series s. This is necessary when working with dataframes, but not when working with series. However, do it to get more comfortable with, since it is a must when working with dataframes. 
-  
-  -- However, the need for .iloc and .loc goes away when slicing. Even when we’re working with data frames, pandas assumes that if you’re using a slice, then you want to work with the index (rather than the columns). As an example on slicing, go with s['September': 'January'], although I can use s.loc['September': 'January']. Also go with s[0:5] although you can try s.iloc[0:5]  
-  
-  -- When slicing using a textual index like s['September': 'January']: unlike using the positional numeric indexes here the slice end is no longer "up to and not including," but is rather "up to and including."
-  
-  -- Most of the time, I prefer to use textual indexes in pandas, because they’re easier to understand, and make the code more readable. But there is a cost: In some simple benchmarking that I performed, I found that it took pandas twice as long to get the text-based slice as the number-based slice. If you find that your pandas analysis is taking a long time, it might be worthwhile to try using positional indexes.
-  
-**side note:**
-
-In a normal distribution, used for many statistical assumptions, we expect that 68% of a data set’s values will be within 1 standard distribution of the mean, that 95% will be within two standard distributions, and 99.7 will be within three standard distributions.
+      + Instead of using s[i] it is generally better to use s.iloc[i] to retrieve positional numeric index i from series s. This is necessary when working with dataframes, but not when working with series. However, do it to get more comfortable with, since it is a must when working with dataframes.
+     + However, the need for .iloc and .loc goes away when slicing. Even when we’re working with data frames, pandas assumes that if you’re using a slice, then you want to work with the index (rather than the columns). As an example on slicing, go with s['September': 'January'], although I can use s.loc['September': 'January']. Also go with s[0:5] although you can try s.iloc[0:5]
+     + When slicing using a textual index like s['September': 'January'], unlike using the positional numeric indexes here the slice end is no longer "up to and not including," but is rather "up to and including."
+     +  Most of the time, I prefer to use textual indexes in pandas, because they’re easier to understand, and make the code more readable. But there is a cost: In some simple benchmarking that I performed, I found that it took Pandas twice as long to get the text-based slice as the number-based slice. If you find that your Pandas analysis is taking a long time, it might be worthwhile to try using positional indexes.
 
 
 
