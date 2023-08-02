@@ -14,14 +14,13 @@ Below is the summary of my notes from the book:
       3. [idxmax()](#6)
       4. [round()](#7)
       5. [astype()](#8)
-      6. [pd.read_csv]
-      7. [value_counts()](#9)
-      8. [pd.cut()](#10)
+      6. [pd.read_csv](#9)
+      7. [value_counts()](#10)
+      8. [pd.cut()](#11)
    3. [Retrieving a series individual elements using textual vs. positional indexes]
    4. [Repeated values for index in pandas series]
-   5. [Fancy indexing]
-   6. 
-3. [Pandas DataFrames](#2)
+   5. [Fancy indexing] 
+2. [Pandas DataFrames](#2)
 
 4. [Importing and exporting data](#3)
 
@@ -39,11 +38,11 @@ Below is the summary of my notes from the book:
 
 11. [Performance](#10)
 
+Pandas is all about analyzing data. And a major part of the analysis that we do in Pandas can be phrased as, **"Where this is the case, show me that"** (Reuven Lerner).
+
 
 <a name="1"></a>
 ## Pandas Series
-
-Pandas is all about analyzing data. And a major part of the analysis that we do in Pandas can be phrased as, **"Where this is the case, show me that"** (Reuven Lerner).
 
 <a name="2"></a>
 ### Series Fundamentals
@@ -56,19 +55,26 @@ Pandas is all about analyzing data. And a major part of the analysis that we do 
 <a name="3"></a>
 ### Series methods
 
-<a name="3"></a>
+<a name="4"></a>
 #### sort_values()
     
 + It is a pandas method that sorts the values of a one-dimensional array or a pandas Series. It returns a new Series or DataFrame (depending on the input) with the values sorted in ascending or descending order. By default, the sorting is in **ascending order**, but you can sort in descending order by passing the parameter ascending=False
 
+<a name="5"></a>
+#### argmax() 
 
-* argmax() is a method that returns the index of the first occurrence of the maximum value in a one-dimensional array or a pandas Series. It is similar to the idxmax() method, but it returns the index position of the maximum value rather than the index label.
++ It is a method that returns the index of the first occurrence of the maximum value in a one-dimensional array or a pandas Series. It is similar to the idxmax() method, but it returns the index position of the maximum value rather than the index label.
 
 
-* idxmax() is a pandas method that returns the label of the first occurrence of the maximum value in a one-dimensional array or a pandas Series. It is similar to the argmax() function, but it returns the index label of the maximum value rather than the index position.
+<a name="5"></a>
+#### idxmax() 
 
++ It is a pandas method that returns the label of the first occurrence of the maximum value in a one-dimensional array or a pandas Series. It is similar to the argmax() function, but it returns the index label of the maximum value rather than the index position.
 
-*  The "round" method, when given a positive integer argument, rounds numbers after the decimal point. When given a negative integer argument, it rounds numbers *before* the decimal point!
+<a name="6"></a>
+#### round()
+
++ The "round" method, when given a positive integer argument, rounds numbers after the decimal point. When given a negative integer argument, it rounds numbers *before* the decimal point!
 
 ### **Retrieving** a series individual elements using textual vs. positional indexes:
 
