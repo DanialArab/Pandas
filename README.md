@@ -157,17 +157,21 @@ we can include the lower bound with passig **include_lowest = True** like
 <a name="13"></a>
 ###  Selecting values using mask/boolean index in pandas
 
-In Python and other traditional programming languages, we can select elements from a sequence using a combination of for loops and if statements (**THIS IS EXACTLY WHAT I DID TO SOLVE THE ABOVE PROBLEMS**). While you could do that in pandas, you almost certainly don’t want to. Instead, you want to select items using a combination of techniques known as a **"boolean index"** or a **"mask index"**.
+In Python and other traditional programming languages, we can select elements from a sequence using a combination of for loops and if statements (THIS IS EXACTLY WHAT I DID TO SOLVE THIS PROBLEM). While you could do that in pandas, you almost certainly don’t want to. Instead, you want to select items using a combination of techniques known as a **"boolean index"** or a **"mask index"**.
 
-Mask indexes are useful and powerful, but their syntax can take some getting used to.
+Mask indexes are useful and powerful, but their syntax can take some time to get used to.
 
 It is called "mask index," because we’re using the list of booleans as a type of sieve, or mask, to select only certain elements.
 
 An explicitly defined list of booleans isn’t very useful or common. But we can also use a series of booleans and those are easy to create. All we need to do is use a comparison operator (e.g., ==) which returns a boolean value. Then we can broadcast the operation, and get a series back. 
 
-We also can use a mask index for assignment like s[s <= s.mean()] = 999 where we replaced the elements less than or equal to the mean with 999.
+We also can use a mask index for assignments like 
 
-This technique is worth learning and internalizing, because it’s both powerful and efficient. It’s useful when working with individual series, as in this chapter—but it’s also applicable to entire data frames, as we’ll see later in the book.
+      s[s <= s.mean()] = 999 
+      
+where we replaced the elements less than or equal to the mean with 999.
+
+This technique is worth learning and internalizing because it’s both powerful and efficient. It’s useful when working with individual series, as in this chapter, but it’s also applicable to entire data frames, as we’ll see later in the book.
 
 <a name="14"></a>
 ###  Repeated values for index in pandas series
@@ -179,15 +183,14 @@ Yes, unlike the index in a Python string, list, or tuple which are unique, as ar
 + This means that when you retrieve s.loc[i], for a given index value, you can’t know in advance whether you will get a single, scalar value (if the index occurs only once) or a series (if the index occurs multiple times). This is another case in which you need to know your data, to know what type of value you’ll get back.
 + In pandas, the diff() function can be used to calculate the difference between consecutive elements in a Series. This function can also take an optional argument, periods, which specifies the number of periods to shift for the differences to be taken. By default, periods is set to 1.
 
-
 <a name="15"></a>
 ###  Fancy indexing
 
-We’ve seen that I can retrieve the item at index 2 with s.loc[2], or the item at index 4 with s.loc[4]. But I can actually retrieve both of them at the same time with what’s known as "fancy indexing" **—passing a list, series, or similar iterable inside of the square brackets**. For example:
+We’ve seen that I can retrieve the item at index 2 with s.loc[2], or the item at index 4 with s.loc[4]. But I can actually retrieve both of them at the same time with what’s known as "fancy indexing" **passing a list, series, or similar iterable inside of the square brackets**. For example:
 
       s.loc [[2, 4]]
 
-The outer square brackets indicate that we want to retrieve from s using loc. And the inner square brackets indicate that we want to retrieve more than one item. pandas returns a series, keeping the orignal indexes and values.
+The outer square brackets indicate that we want to retrieve from s using loc. And the inner square brackets indicate that we want to retrieve more than one item. Pandas returns a series, keeping the original indexes and values.
 
 <a name="16"></a>
 ### Summary
@@ -198,7 +201,7 @@ In the next chapter, we’ll expand our reach to look at data frames, the two-di
 
 <a name="2"></a>
 ## 2. Pandas DataFrames
-
+HERE
 Data frames are two-dimensional tables that look and work similar to an Excel spreadsheet. The rows are accessible via an index—yes, the same index that we have been using so far with our series! **So long as you use .loc and .iloc to retrieve elements via the index, you’ll be fine.**
 
 But of course, data frames also have columns, each of which has a name. Each column is effectively its own series, which means that it has an independent dtype from other columns.
