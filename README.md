@@ -2,14 +2,12 @@
 
 This repository documents my understanding of Pandas and contains <a href="https://github.com/DanialArab/Pandas/blob/master/pandas.ipynb">my solutions</a> to 200 detailed exercises (50 main exercises along with 150 beyond exercises) from the book written by Reuven Lerner <a href="https://www.manning.com/books/pandas-workout">Pandas Workouts</a>.
 
-Pandas is all about analyzing data. And a major part of the analysis that we do in Pandas can be phrased as, **"Where this is the case, show me that"** (Reuven Lerner).
-
 Below is the summary of my notes from the book:
 
 # Table of content
 
 1. [Pandas Series](#1)
-   1. [Series Fundamentals](#1)
+   1. [Series Fundamentals](#2)
    1. [Series methods](#1)
       1. [sort_values](#1)
       2. [astype](#1)
@@ -36,17 +34,16 @@ Below is the summary of my notes from the book:
 
 
 <a name="1"></a>
-## 1. Pandas Series
+## Pandas Series
 
-**Points:** 
+Pandas is all about analyzing data. And a major part of the analysis that we do in Pandas can be phrased as, **"Where this is the case, show me that"** (Reuven Lerner).
 
-* If I don't specify index when creating a pandas series, then the series index will be the default, integers starting from 0
+<a name="2"></a>
+### Series Fundamentals
 
-
-* Given the flexibility and power pandas gives me, I can assign a list, NumPy array, or pandas series as an index. However, the data structure you pass must be of the same length as the series. If it isn’t, you’ll get a ValueError exception. 
-
-
-* I can set, or even change, the index even after the series has already been created using s.index = ...
++ If I don't specify an index when creating a pandas series, then the series index will be the default, integers starting from 0
++ Given the flexibility and power pandas gives me, I can assign a list, NumPy array, or pandas series as an index. However, the data structure you pass must be of the same length as the series. If it isn’t, you’ll get a ValueError exception.
++ I can set, or even change, the index even after the series has already been created using s.index = ...
 
   
 * **sort_values() method**:
