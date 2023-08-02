@@ -18,8 +18,9 @@ Below is the summary of my notes from the book:
       7. [value_counts()](#10)
       8. [pd.cut()](#11)
    3. [Retrieving a series individual elements using textual vs. positional indexes](#12)
-   4. [Repeated values for index in pandas series](#13)
-   5. [Fancy indexing] (#14)
+   4. [Selecting values using mask/boolean index in pandas](#13)
+   5. [Repeated values for index in pandas series](#14)
+   6. [Fancy indexing] (#15)
 2. [Pandas DataFrames](#2)
 
 4. [Importing and exporting data](#3)
@@ -153,7 +154,8 @@ we can include the lower bound with passig **include_lowest = True** like
 
 
 
-### Selecting values using mask/boolean index in pandas
+<a name="13"></a>
+###  Selecting values using mask/boolean index in pandas
 
 In Python and other traditional programming languages, we can select elements from a sequence using a combination of for loops and if statements (**THIS IS EXACTLY WHAT I DID TO SOLVE THE ABOVE PROBLEMS**). While you could do that in pandas, you almost certainly don’t want to. Instead, you want to select items using a combination of techniques known as a **"boolean index"** or a **"mask index"**.
 
@@ -167,7 +169,8 @@ We also can use a mask index for assignment like s[s <= s.mean()] = 999 where we
 
 This technique is worth learning and internalizing, because it’s both powerful and efficient. It’s useful when working with individual series, as in this chapter—but it’s also applicable to entire data frames, as we’ll see later in the book.
 
-### Repeated values for index in pandas series
+<a name="14"></a>
+###  Repeated values for index in pandas series
 
 Yes, unlike the index in a Python string, list, or tuple which are unique, as are the keys in a Python dictionary, the series index can have repeated values—not just integers, but also strings (as in this example) and even other data structures, such as times and dates (as we’ll see in chapter 9). Normally, when we retrieve a value from a series via loc, we expect to get a single value back. But if the index is repeated, then we will get back multiple values. And in pandas, multiple values will be returned as a series.
 
@@ -181,7 +184,8 @@ from chatGPT:
 In pandas, the diff() function can be used to calculate the difference between consecutive elements in a Series. This function can also take an optional argument, periods, which specifies the number of periods to shift for the differences to be taken. By default, periods is set to 1.
 
 
-### FANCY INDEXING
+<a name="15"></a>
+###  FANCY INDEXING
 
 We’ve seen that I can retrieve the item at index 2 with s.loc[2], or the item at index 4 with s.loc[4]. But I can actually retrieve both of them at the same time with what’s known as "fancy indexing" **—passing a list, series, or similar iterable inside of the square brackets**. For example:
 
