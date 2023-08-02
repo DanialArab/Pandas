@@ -8,12 +8,19 @@ Below is the summary of my notes from the book:
 
 1. [Pandas Series](#1)
    1. [Series Fundamentals](#2)
-   1. [Series methods](#1)
-      1. [sort_values](#1)
-      2. [astype](#1)
-      3. [value_counts ](#1)
-      4. [pd.cut](#1)
-
+   2. [Series methods](#3)
+      1. [sort_values()](#4)
+      2. [argmax()](#5)
+      3. [idxmax()](#6)
+      4. [round()](#7)
+      5. [astype()](#8)
+      6. [pd.read_csv]
+      7. [value_counts()](#9)
+      8. [pd.cut()](#10)
+   3. [Retrieving a series individual elements using textual vs. positional indexes]
+   4. [Repeated values for index in pandas series]
+   5. [Fancy indexing]
+   6. 
 3. [Pandas DataFrames](#2)
 
 4. [Importing and exporting data](#3)
@@ -44,14 +51,18 @@ Pandas is all about analyzing data. And a major part of the analysis that we do 
 + If I don't specify an index when creating a pandas series, then the series index will be the default, integers starting from 0
 + Given the flexibility and power pandas gives me, I can assign a list, NumPy array, or pandas series as an index. However, the data structure you pass must be of the same length as the series. If it isn’t, you’ll get a ValueError exception.
 + I can set, or even change, the index even after the series has already been created using s.index = ...
++ Vectorization in Pandas: One of the most important ideas in pandas (and in NumPy) is that of vectorized operations. When you perform an operation on two different series, the indexes are matched, and the operation is performed via the indexes.
 
-  
-* **sort_values() method**:
+<a name="3"></a>
+### Series methods
+
+<a name="3"></a>
+#### sort_values()
     
-    it is a pandas method that sorts the values of a one-dimensional array or a pandas Series. It returns a new Series or DataFrame (depending on the input) with the values sorted in ascending or descending order. By default, the sorting is in **ascending order**, but you can sort in descending order by passing the parameter ascending=False
++ It is a pandas method that sorts the values of a one-dimensional array or a pandas Series. It returns a new Series or DataFrame (depending on the input) with the values sorted in ascending or descending order. By default, the sorting is in **ascending order**, but you can sort in descending order by passing the parameter ascending=False
 
 
-* argmax() is a function that returns the index of the first occurrence of the maximum value in a one-dimensional array or a pandas Series. It is similar to the idxmax() method, but it returns the index position of the maximum value rather than the index label.
+* argmax() is a method that returns the index of the first occurrence of the maximum value in a one-dimensional array or a pandas Series. It is similar to the idxmax() method, but it returns the index position of the maximum value rather than the index label.
 
 
 * idxmax() is a pandas method that returns the label of the first occurrence of the maximum value in a one-dimensional array or a pandas Series. It is similar to the argmax() function, but it returns the index label of the maximum value rather than the index position.
@@ -84,15 +95,13 @@ Every series has a dtype attribute, and you can always read from that to know th
 
 Normally, pandas guesses the dtype based on the data you pass it at creation:
 
-You can specify the type of data in a series by passing a value to the dtype parameter when you create a series like s = pd.Series ([1, 2, 3], dtype = np.float64)
+You can specify the type of data in a series by passing a value to the dtype parameter when you create a series like:
 
-### astype
+      s = pd.Series ([1, 2, 3], dtype = np.float64)
+
+### astype ()
 
 What if you want to change the dtype of a series once you’ve already created it? You can’t set the dtype attribute; it’s read only. Instead, you will need to create a new series based on the existing one by invoking the astype method:
-
-### Vectorization in Pandas 
-
-One of the most important ideas in pandas (and in NumPy) is that of vectorized operations. When you perform an operation on two different series, the indexes are matched, and the operation is performed via the indexes.
 
 ### Selecting values using mask/boolean index in pandas
 
