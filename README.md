@@ -92,24 +92,24 @@ What if you want to change the dtype of a series once you’ve already created i
 <a name="8"></a>
 #### pd.read_csv()
 
-read_csv is more typically used to create a data frame—but if we provide it with a file that contains only one data point per line, and pass a True value to the squeeze parameter, then we’ll get a series back. 
+It is more typically used to create a data frame, but if we provide it with a file that contains only one data point per line, and pass a True value to the **squeeze parameter**, then we’ll get a series back. 
 
-**s = pd.read_csv('file.csv', squeeze = True, header = None)**
+      s = pd.read_csv('file.csv', squeeze = True, header = None)
 
 I also set the header parameter to be None, indicating that the first line in the file should not be taken as a column name, but rather is data to be included in our calculations. This will result in the series having a name value of 0, which we can safely ignore.
 
 <a name="9"></a>
-#### value_counts method()
+#### value_counts ()
 
-It is a series method that is one of my favorites. If you apply value_counts to the series s, you get back a new series whose keys are the distinct values in s, and whose values are integers indicating how often each value appeared. 
+It is a series method that is one of the favorite ones. If you apply value_counts to the series s, you get back a new series whose keys are the distinct values in s, and whose values are integers indicating how often each value appeared. 
 
 Notice that the values are automatically sorted from most common to least common.
 
 Because we get a series back from value_counts, we can use all of our series tricks on it. For example, we can invoke head on it, to get the five most common elements. We can also use fancy indexing, in order to retrieve the counts for specific values. 
 
-If we’re interested in the percentages, not in the raw values, value_counts has an optional normalize parameter, that if set to True returns the fraction. 
+If we’re interested in the percentages, not in the raw values, value_counts has an optional normalize parameter, that if set to True returns the fraction, like:
 
-so the solution to the above problem would be much soimpler like pass_count.value_counts(normalize = True)[['1', '6']]
+      pass_count.value_counts(normalize = True)[['1', '6']]
 
 
 <a name="10"></a>
@@ -119,7 +119,7 @@ The pd.cut method allows us to **set numeric boundaries, and then to cut a serie
 
 Notice that pd.cut is not a series method, but rather a function in the top-level pd namespace. We’ll pass it a few arguments:
 
-pd.cut(s, bins = [s.min(), 2, 10, s.max()], labels = ['short', 'medium', 'long'])
+      pd.cut(s, bins = [s.min(), 2, 10, s.max()], labels = ['short', 'medium', 'long'])
 
 * our series, s
 * a list of four integers representing the boundaries of our three bins, assigned to the bins parameter
@@ -131,7 +131,7 @@ Note that the bin boundaries are **exclusive on the left, and inclusive on the r
 
 we can include the lower bound with passig **include_lowest = True** like
 
-    df_nyc['trip_distance_group'] = pd.cut(df_nyc['trip_distance'],
+      df_nyc['trip_distance_group'] = pd.cut(df_nyc['trip_distance'],
 
                                                 bins = [0, 2, 10, df_nyc['trip_distance'].max()],
 
