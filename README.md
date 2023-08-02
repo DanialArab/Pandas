@@ -14,7 +14,7 @@ Below is the summary of my notes from the book:
       3. [idxmax()](#6)
       4. [round()](#7)
       5. [astype()](#8)
-      6. [pd.read_csv](#9)
+      6. [pd.read_csv()](#9)
       7. [value_counts()](#10)
       8. [pd.cut()](#11)
    3. [Retrieving a series individual elements using textual vs. positional indexes]
@@ -76,6 +76,70 @@ Pandas is all about analyzing data. And a major part of the analysis that we do 
 
 + The "round" method, when given a positive integer argument, rounds numbers after the decimal point. When given a negative integer argument, it rounds numbers *before* the decimal point!
 
+<a name="7"></a>
+#### astype ()
+
+Data types in Pandas: 
+
+Every series has a dtype attribute, and you can always read from that to know the type of data it contains. Every value in a series is of that type; unlike a Python list or tuple, you cannot have different types mixed together in a series. 
+
+Normally, pandas guesses the dtype based on the data you pass it at creation. You can specify the type of data in a series by passing a value to the dtype parameter when you create a series like:
+
+      s = pd.Series ([1, 2, 3], dtype = np.float64)
+
+What if you want to change the dtype of a series once you’ve already created it? You can’t set the dtype attribute; it’s read only. Instead, you will need to create a new series based on the existing one by invoking the **astype method.**
+
+<a name="8"></a>
+#### pd.read_csv()
+
+read_csv is more typically used to create a data frame—but if we provide it with a file that contains only one data point per line, and pass a True value to the squeeze parameter, then we’ll get a series back. 
+
+**s = pd.read_csv('file.csv', squeeze = True, header = None)**
+
+I also set the header parameter to be None, indicating that the first line in the file should not be taken as a column name, but rather is data to be included in our calculations. This will result in the series having a name value of 0, which we can safely ignore.
+
+<a name="9"></a>
+#### value_counts method()
+
+It is a series method that is one of my favorites. If you apply value_counts to the series s, you get back a new series whose keys are the distinct values in s, and whose values are integers indicating how often each value appeared. 
+
+Notice that the values are automatically sorted from most common to least common.
+
+Because we get a series back from value_counts, we can use all of our series tricks on it. For example, we can invoke head on it, to get the five most common elements. We can also use fancy indexing, in order to retrieve the counts for specific values. 
+
+If we’re interested in the percentages, not in the raw values, value_counts has an optional normalize parameter, that if set to True returns the fraction. 
+
+so the solution to the above problem would be much soimpler like pass_count.value_counts(normalize = True)[['1', '6']]
+
+
+<a name="10"></a>
+#### pd.cut()
+
+The pd.cut method allows us to **set numeric boundaries, and then to cut a series into parts (known as "bins") based on those boundaries.** Moreover, it can assign labels to each of the bins.
+
+Notice that pd.cut is not a series method, but rather a function in the top-level pd namespace. We’ll pass it a few arguments:
+
+pd.cut(s, bins = [s.min(), 2, 10, s.max()], labels = ['short', 'medium', 'long'])
+
+* our series, s
+* a list of four integers representing the boundaries of our three bins, assigned to the bins parameter
+* a list of three strings, the labels for our three bins, assigned to the labels parameter
+
+Note that the bin boundaries are **exclusive on the left, and inclusive on the right.** In other words, by specifying that the "medium" bin is between 2 and 10, that means >2 but <=10. The result of this call to pd.cut is a series of the same length as s, but with the labels replacing the values
+
+**good point:**
+
+we can include the lower bound with passig **include_lowest = True** like
+
+    df_nyc['trip_distance_group'] = pd.cut(df_nyc['trip_distance'],
+
+                                                bins = [0, 2, 10, df_nyc['trip_distance'].max()],
+
+                                                labels = ['short', 'medium', 'long'],
+
+                                                include_lowest = True)
+
+
 ### **Retrieving** a series individual elements using textual vs. positional indexes:
 
   -- Use .iloc for the numeric index, and .loc for the custom textual index. You don’t need to use .iloc or .loc when you **retrieve slices**, however.
@@ -95,19 +159,7 @@ Pandas is all about analyzing data. And a major part of the analysis that we do 
 
 In a normal distribution, used for many statistical assumptions, we expect that 68% of a data set’s values will be within 1 standard distribution of the mean, that 95% will be within two standard distributions, and 99.7 will be within three standard distributions.
 
-### Data types in Pandas 
 
-Every series has a dtype attribute, and you can always read from that to know the type of data it contains. Every value in a series is of that type; unlike a Python list or tuple, you cannot have different types mixed together in a series. 
-
-Normally, pandas guesses the dtype based on the data you pass it at creation:
-
-You can specify the type of data in a series by passing a value to the dtype parameter when you create a series like:
-
-      s = pd.Series ([1, 2, 3], dtype = np.float64)
-
-### astype ()
-
-What if you want to change the dtype of a series once you’ve already created it? You can’t set the dtype attribute; it’s read only. Instead, you will need to create a new series based on the existing one by invoking the astype method:
 
 ### Selecting values using mask/boolean index in pandas
 
@@ -146,52 +198,6 @@ s.loc [[2, 4]]
 The outer square brackets indicate that we want to retrieve from s using loc. And the inner square brackets indicate that we want to retrieve more than one item. pandas returns a series, keeping the orignal indexes and values.
 
 
-### pd.read_csv
-
-read_csv is more typically used to create a data frame—but if we provide it with a file that contains only one data point per line, and pass a True value to the squeeze parameter, then we’ll get a series back. 
-
-**s = pd.read_csv('file.csv', squeeze = True, header = None)**
-
-I also set the header parameter to be None, indicating that the first line in the file should not be taken as a column name, but rather is data to be included in our calculations. This will result in the series having a name value of 0, which we can safely ignore.
-
-### value_counts method
-
-It is a series method that is one of my favorites. If you apply value_counts to the series s, you get back a new series whose keys are the distinct values in s, and whose values are integers indicating how often each value appeared. 
-
-Notice that the values are automatically sorted from most common to least common.
-
-Because we get a series back from value_counts, we can use all of our series tricks on it. For example, we can invoke head on it, to get the five most common elements. We can also use fancy indexing, in order to retrieve the counts for specific values. 
-
-If we’re interested in the percentages, not in the raw values, value_counts has an optional normalize parameter, that if set to True returns the fraction. 
-
-so the solution to the above problem would be much soimpler like pass_count.value_counts(normalize = True)[['1', '6']]
-
-
-### pd.cut
-
-The pd.cut method allows us to **set numeric boundaries, and then to cut a series into parts (known as "bins") based on those boundaries.** Moreover, it can assign labels to each of the bins.
-
-Notice that pd.cut is not a series method, but rather a function in the top-level pd namespace. We’ll pass it a few arguments:
-
-pd.cut(s, bins = [s.min(), 2, 10, s.max()], labels = ['short', 'medium', 'long'])
-
-* our series, s
-* a list of four integers representing the boundaries of our three bins, assigned to the bins parameter
-* a list of three strings, the labels for our three bins, assigned to the labels parameter
-
-Note that the bin boundaries are **exclusive on the left, and inclusive on the right.** In other words, by specifying that the "medium" bin is between 2 and 10, that means >2 but <=10. The result of this call to pd.cut is a series of the same length as s, but with the labels replacing the values
-
-**good point:**
-
-we can include the lower bound with passig **include_lowest = True** like
-
-    df_nyc['trip_distance_group'] = pd.cut(df_nyc['trip_distance'],
-
-                                                bins = [0, 2, 10, df_nyc['trip_distance'].max()],
-
-                                                labels = ['short', 'medium', 'long'],
-
-                                                include_lowest = True)
 
 ### Summary
 
