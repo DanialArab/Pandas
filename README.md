@@ -35,7 +35,7 @@ Below is the summary of my notes from the book:
       5. [interpolate()](#27)
       6. [memory_usage()](#28)
    6. [Three ways to optimize your Pandas data frame's memory usage](#28)
-3. [Importing and exporting data]
+3. [Importing and exporting data](#29)
    1. []
    2. []
 
@@ -432,8 +432,8 @@ to get the dataframe's details:
 + choose dtypes appropriately 
 + remove rows that you don't need through cleaning
                               
-<a name="3"></a>
-## 3. Importing and exporting data
+<a name="29"></a>
+## Importing and exporting data
 
 **CSV, the non-standard standard**
 
