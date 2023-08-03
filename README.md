@@ -27,7 +27,7 @@ Below is the summary of my notes from the book:
    2. [Bracket vs. dot notation](#19)
    3. [Adding columns to a dataframe](#20)
    4. [Retrieving and Assigning with loc](#21)
-   5. [DataFrames methods](#22)
+   5. [DataFrames methods/functions](#22)
       1. [pd.concat()](#23)
       2. [query()](#24)
    6. [NaN and missing data](#25)
@@ -214,11 +214,16 @@ In the next chapter, we’ll expand our reach to look at data frames, the two-di
 <a name="18"></a>
 ### DataFrames Fundamentals
 
-Data frames are two-dimensional tables that look and work similarly to an Excel spreadsheet. The rows are accessible via an index—yes, the same index that we have been using so far with our series! **So long as you use .loc and .iloc to retrieve elements via the index, you’ll be fine.**
++ Data frames are two-dimensional tables that look and work similarly to an Excel spreadsheet. The rows are accessible via an index—yes, the same index that we have been using so far with our series! **So long as you use .loc and .iloc to retrieve elements via the index, you’ll be fine.**
++ But of course, data frames also have columns, each of which has a name. Each column is effectively its own series, which means that it has an independent dtype from other columns.
++ In a typical data frame, each column represents a feature, or attribute, of our data, while each row represents one sample.
++ Side note: the term "outliers" doesn’t have a precise, standard definition. one definition is: 
 
-But of course, data frames also have columns, each of which has a name. Each column is effectively its own series, which means that it has an independent dtype from other columns.
+      inter-quartile range (IQR) = quantile(0.75) - quantile(0.25)
 
-In a typical data frame, each column represents a feature, or attribute, of our data, while each row represents one sample.
+Outliers would then be values **below the quantile(0.25) - 1.5 * IQR**, or any values **above the quantile(0.75) + 1.5 * IQR**.
+
+We’ll use this definition here, but you might find that a different definition—say, anything below the mean - two standard deviations, or above the mean + two standard deviations, might be a better fit for your data.
 
 <a name="19"></a>
 ### Bracket vs. dot notation 
@@ -244,16 +249,17 @@ There is another way to add a column to a Pandas data frame, namely the assign m
 
 Column names are unique—so just as with a dictionary, assigning to an existing column will replace it with the new one. That said, if your data frame’s columns are not of the same dtype, you might find yourself with a SettingWithCopyWarning when assigning for replacement. 
 
+<a name="21"></a>
 ### Retrieving and Assigning with loc
 
-It’s pretty straightforward to retrieve an entire row from a data frame, or even replace a row’s values with new ones. For example, I can grab the values in the row with index abcd with df.loc['abcd']. If I prefer to use the numeric (positional) index, then I can instead use df.iloc[5]. In both cases, I get back a series. (Yes, even though the columns of a data frame are a series, pandas uses a series whenever it returns multiple, one-dimensional data.)
+It’s pretty straightforward to retrieve an entire row from a data frame, or even replace a row’s values with new ones. For example, I can grab the values in the row with index abcd with df.loc['abcd']. If I prefer to use the numeric (positional) index, then I can instead use df.iloc[5]. In both cases, I get back a series. (Yes, even though the columns of a data frame are a series, Pandas uses a series whenever it returns multiple, one-dimensional data.)
 
 
 Retrieving a whole row isn’t that tough. But what if want to retrieve only part of a row? More significantly, how could we set values on only part of a row?
 
-pandas actually provides us with a number of techniques for setting values. My preferred method is to use loc, providing two arguments in the square brackets. The first describes the row(s) that we want to retrieve, while the second describes the column(s) we want to retrieve. This technique also lends itself to changing and updating values in a data frame.
+Pandas actually provides us with a number of techniques for setting values. My preferred method is to use loc, providing two arguments in the square brackets. The first describes the row(s) that we want to retrieve, while the second describes the column(s) we want to retrieve. This technique also lends itself to changing and updating values in a data frame.
 
-If I want to retrieve row a and c and columns v and y: 
+If I want to retrieve row a and c and columns x and y: 
 
     df.loc[['a', 'c'], ['x', 'y']]
 
@@ -270,7 +276,6 @@ The above expression will return all of those rows from df in which column x was
 Notice that because the first boolean index is choosing rows, it is based on a column. And because the second boolean index is choosing columns, it is based on a row—which means that it should be using loc.
 
 Of course, our conditions can be far more complex than these. But as long as you keep in mind that you want to select based on rows before the comma, and based on columns after the comma, you should be fine.
-
 
 If I want to set all of the values in row b, where column c is even, to new values, then I can assign a list (or NumPy array, or pandas series) of three items, matching the three I get back from the query:
 
@@ -290,29 +295,38 @@ Finally, if your data frame’s columns are not of the same dtype, then you migh
 
 The above code will replace the current values of column d with new values, all of them having a dtype of float16.
 
-### pd.concat
+<a name="22"></a>
+### DataFrames methods/functions 
+
 We’ll also see how just about every **series method** will also work on a data frame, returning one value per data frame column.
 
-The pd.concat function concatenates dataframes with each other. It’s a top-level pandas function, and takes a list of data frames you would like to concatenate. By default, pd.concat assumes that you want to join them top-to-bottom, but you can do it side-to-side if you want by setting the axis parameter.
+<a name="23"></a>
+#### pd.concat()
+
+The pd.concat function concatenates dataframes with each other. It’s a top-level Pandas function, and takes a list of data frames you would like to concatenate. By default, pd.concat assumes that you want to join them top-to-bottom, but you can do it side-to-side if you want by setting the axis parameter.
 
 The result of pd.concat is a new data frame.
 
-### note on the final dataframe after the concatenation: 
+**note on the final dataframe after the concatenation**: 
 
 Next, I asked you to ensure that the new data frame (the one after concatenation)’s index doesn’t contain duplicate values—something that is almost certainly the case at this point, given that we created df from two previous data frames. You can actually check to see if a data frame’s index contains repeated values with the code
 
     df_ny_taxi_2020.index.is_unique
 
-If this returns True, then the values are already unique. If not, then some Seaborn plots will give you errors. We could renumber the index on our own, but why work so hard, when pandas includes this functionality? We can just say:
+If this returns True, then the values are already unique. If not, then some Seaborn plots will give you errors. We could renumber the index on our own, but why work so hard, when Pandas includes this functionality? We can just say:
 
     df_ny_taxi_2020 = df_ny_taxi_2020.reset_index(drop=True)
 
-By passing drop=True, we tell reset_index not to make the just-ousted index column a regular column in the data frame, but rather to drop it entirely.
+By passing drop=True, we tell reset_index not to make the just-ousted (means just-removed) index column a regular column in the data frame, but rather to drop it entirely.
 
-### THE Query method --  to retrieve rows
-The traditional way to select rows from a data frame, as we have seen, is via a boolean index. But there is another way to do it, namely the query method. This mehod might feel especially familiar if you have previously used SQL and relational databases.
+<a name="24"></a>
+#### query()
 
-The basic idea behind query is simple: We provide a **string** that pandas turns into a full-fledged query. We get back a filtered set of **rows** from the original data frame. For example, let’s say that I want all of the rows in which the column v is greater than 300. Using a traditional boolean index, I would write:
+It is used to retrieve rows.
+
+The traditional way to select rows from a data frame, as we have seen, is via a boolean index. But there is another way to do it, namely the query method. This method might feel especially familiar if you have previously used SQL and relational databases.
+
+The basic idea behind query is simple: We provide a **string** that Pandas turns into a full-fledged query. We get back a filtered set of **rows** from the original data frame. For example, let’s say that I want all of the rows in which the column v is greater than 300. Using a traditional boolean index, I would write:
 
     df[df['v'] >300]
 
@@ -335,25 +349,13 @@ Note that query cannot be used on the left side of an assignment.
 
 Also note that in some simple benchmarks that I ran, using query took about twice as long to execute as loc. It might be more convenient, but it isn’t necessarily a good idea if you’re worried about performance.
 
-**question for chatGPT:** is pandas query for just rows?
+Is pandas query for just rows?
 
 Re:
 
-Yes, the pandas query method is used to **filter rows** in a DataFrame based on a Boolean expression. It returns a **new DataFrame** containing only the rows that satisfy the specified condition.
+Yes, the Pandas query method is used to **filter rows** in a DataFrame based on a Boolean expression. It returns a **new DataFrame** containing only the rows that satisfy the specified condition.
 
-### **Outliers**
-
-The term "outliers" doesn’t have a precise, standard definition. one definition is: 
-
-**"inter-quartile range," or "IQR" = quantile(0.75) - quantile(0.25)**
-
-Outliers would then be values **below the quantile(0.25) - 1.5 * IQR**, or any values **above the quantile(0.75) + 1.5 * IQR**.
-
-We’ll use this definition here, but you might find that a different definition—say, anything below the mean - two standard deviations, or above the mean + two standard deviations, might be a better fit for your data.
-
-
-**side note, i asked chatGPT is quantile the same as quartile?**
-
+<a name="25"></a>
 ### NaN and missing data
 
 pandas uses something known as NaN, aka "not a number." NaN is the pandas style for writing nan, a value that’s also available in NumPy. Both names are aliases to the same strange value, a float that cannot be converted into an integer, and that is not equal to itself.
