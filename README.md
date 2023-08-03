@@ -33,8 +33,8 @@ Below is the summary of my notes from the book:
       3. [fillna() and dropna()](#25)
       4. [count()](#26)
       5. [interpolate()](#27)
-
-4. [Importing and exporting data](#3)
+3. [Importing and exporting data](#28)
+   1. [
 
 5. [Indexes](#4)
 
