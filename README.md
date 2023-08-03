@@ -387,7 +387,7 @@ When your data contains missing values, you have a few possible ways to handle t
 
 When we call df.interpolate, it returns a new data frame. In theory, all of the columns will be interpolated—but if there is only missing data in one specific column that column will be interpolated. 
 
-### Reuven's tip on urgency to use .loc
+Reuven's tip on urgency to use .loc: 
 
 If you’re like many Pandas users, then you might have thought about things like this:
 
