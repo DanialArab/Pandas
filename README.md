@@ -30,8 +30,9 @@ Below is the summary of my notes from the book:
    5. [DataFrames methods/functions](#22)
       1. [pd.concat()](#23)
       2. [query()](#24)
-   6. [NaN and missing data](#25)
-      1. [interpolation](#26)
+      3. [fillna() and dropna()]
+      4. [count()]
+      5. [interpolate()]
 
 4. [Importing and exporting data](#3)
 
@@ -356,12 +357,13 @@ Re:
 Yes, the Pandas query method is used to **filter rows** in a DataFrame based on a Boolean expression. It returns a **new DataFrame** containing only the rows that satisfy the specified condition.
 
 <a name="25"></a>
-### NaN and missing data
+#### fillna() and dropna() 
 
-pandas uses something known as NaN, aka "not a number." NaN is the pandas style for writing nan, a value that’s also available in NumPy. Both names are aliases to the same strange value, a float that cannot be converted into an integer, and that is not equal to itself.
+How to deal with NaN and missing data:
 
-In NumPy, we typically search for NaN values with the **isnan** function. pandas has a different approach, though: We can **replace** the NaN values in a series (or data frame) with the **fillna** method. And we can **drop any row with NaN values with the dropna** method.
+Pandas uses something known as NaN, aka "not a number." NaN is the Pandas style for writing nan, a value that’s also available in NumPy. Both names are aliases to the same strange value, a float that cannot be converted into an integer, and that is not equal to itself.
 
+In NumPy, we typically search for NaN values with the **isnan** function. Pandas has a different approach, though: We can **replace** the NaN values in a series (or data frame) with the **fillna** method. And we can **drop any row with NaN values with the dropna** method.
 
 Both of these methods return a **new series or data frame**, rather than modifying the original object. However, the new object you get back might not have copied the data, which means that assigning to it might produce the famous, dreaded SettingWithCopyWarning. If you plan to modify the series or data frame that you get back from df.dropna, you should probably invoke the copy method, just to be sure:
 
@@ -371,40 +373,35 @@ This ensures that you can then modify df without having to suffer from that warn
 
 As you can imagine, it might be a bit extreme to remove any row containing even a single NaN value. For that reason, the dropna method has a **thresh** parameter, to which we can pass an integer—the number of **good, non-NaN values** that a row must contain in order for it to be kept. You might need to give some serious thought to how strictly you want to filter your data.
 
+<a name="26"></a>
+#### count()
+
 The **count** method on a series returns the number of **non-NaN values**. If there are no NaN values at all, then the result will be the same as the size of the series.
 
 The count method on a data frame returns a series, with the columns' names as the index. Any columns with lower numbers, Reuven should have meant "compared to the len of dataframe", contain NaN values.
 
+<a name="27"></a>
+####  interpolate()
 
-Quantiles and quartiles are related concepts, but they are not exactly the same thing.
-
-A quartile is a specific type of quantile that divides a dataset into four equal parts. The first quartile, denoted Q1, represents the 25th percentile of the data, which means that 25% of the data falls below this value. The second quartile, denoted Q2 or the median, represents the 50th percentile of the data. The third quartile, denoted Q3, represents the 75th percentile of the data.
-
-Quantiles, on the other hand, are a more general concept that divides a dataset into equal parts, but not necessarily into four equal parts. For example, the median is a quantile that divides the data into two equal parts (i.e., the 50th percentile). Other common quantiles include the decile (which divides the data into ten equal parts) and the percentile (which divides the data into 100 equal parts).
-
-So, while quartiles are a type of quantile, the term "quantile" is a more general term that includes other types of divisions of the data into equal parts.
-
-### interpolation
-
-When your data contains missing values, you have a few possible ways to handle this. You can remove rows with missing values, but that might remove a large number of otherwise useful rows. A standard alternative is interpolation, in which you replace NaN with values that are likely to be close to the orignal ones. The values might be wrong, but but they will be roughly in the right ballpark.
+When your data contains missing values, you have a few possible ways to handle this. You can remove rows with missing values, but that might remove a large number of otherwise useful rows. A standard alternative is interpolation, in which you replace NaN with values that are likely to be close to the original ones. The values might be wrong, but they will be roughly in the right ballpark.
 
 When we call df.interpolate, it returns a new data frame. In theory, all of the columns will be interpolated—but if there is only missing data in one specific column that column will be interpolated. 
 
 ### Reuven's tip on urgency to use .loc
 
-If you’re like many pandas users, then you might have thought about things like this:
+If you’re like many Pandas users, then you might have thought about things like this:
 
   	  df_temps[df_temps['temp'] < 0]['temp'] = 0
 
-Logically, this makes perfec sense. There’s just one problem: You cannot know in advance if it will work. That’s because pandas does a lot of internal analysis and optimization when it’s putting together our queries. You thus cannot know if your assignment will actually change the temp column on df, or—and this is the important thing—if pandas has decided to cache the results of your first query, applying ['temp'] to that cached, internal value rather than to the original one.
+Logically, this makes perfect sense. There’s just one problem: You cannot know in advance if it will work. That’s because Pandas does a lot of internal analysis and optimization when it’s putting together our queries. You thus cannot know if your assignment will actually change the temp column on df, or—and this is the important thing—if Pandas has decided to cache the results of your first query, applying ['temp'] to that cached, internal value rather than to the original one.
 
-As a result, it’s common—and maddening!—to get a SettingWithCopyWarning from pandas. It looks like this:
+As a result, it’s common—and maddening!—to get a SettingWithCopyWarning from Pandas. It looks like this:
 
 <ipython-input-2-acedf13a3438>:1: SettingWithCopyWarning:
 A value is trying to be set on a copy of a slice from a DataFrame.
 Try using .loc[row_indexer,col_indexer] = value instead
     
-When you get this warning, it’s because pandas is trying to be helpful and nice, telling you that your assignment might have no effect. The warning, by the way, isn’t telling you that the assignment won’t work, because it might. It all depends on the amount of data you have, and how pandas thinks it can or should optimize things.
+When you get this warning, it’s because Pandas is trying to be helpful and nice, telling you that your assignment might have no effect. The warning, by the way, isn’t telling you that the assignment won’t work, because it might. It all depends on the amount of data you have, and how Pandas thinks it can or should optimize things.
 
 The telltale sign that you might get this warning is the use of double square brackets—not nested, with one pair inside of the other, but with one right after the other. Whenever you see **][** in pandas queries, you should try hard to avoid it, because it might spell trouble when you assign to it. And truthfully, retrieving with this syntax, while something that all of us have done over the years, is something that you can avoid **using loc** and the "rows, columns" selection syntax that we’ve seen and discussed.
 
