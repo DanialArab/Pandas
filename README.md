@@ -36,12 +36,16 @@ Below is the summary of my notes from the book:
       6. [memory_usage()](#28)
    6. [Three ways to optimize your Pandas data frame's memory usage](#28)
 3. [Importing and exporting data](#29)
-   1. []
-   2. []
+   1. [CSV files](#29)
+   2. [Compressed files](#29)
+   3. [Text files](#29)
+   4. [html files](#29)
+   5. [JSON files](#29)
+   6. [Excel files](#29)
 
-5. [Indexes](#4)
+4. [Indexes](#4)
 
-6. [Cleaning data](#5)
+5. [Cleaning data](#5)
 
 7. [Grouping, joining, and sorting](#6)
 
@@ -553,22 +557,6 @@ pandas actually has a great solution: If sep contains more than one character, t
 
 The big downside to using regular expressions to handle field separators is that it requires the use of a Python-based CSV parser. By default, pandas uses a C-based parser, which runs faster and uses less memory. Consider whether you really need this functionality, and thus the performance hit that the Python-based parser creates.
                                       
-### Reuven crash course on regular expressions 
-
-This is an E-mail course: Regexps crash course meaning in 14 days I am supposed to receive one email teaching me regexps along with some exercises.
-
-* day_1
-
- -- Regexps have a reputation for being impossible to understand, even among experienced programmers; my goal is to show you that this doesn't have to be the case.
- 
- -- What we want, then, is a way to describe the patterns for which we're looking in the text, in a way that is compact and precise. And that's the job of regular expressions.
-
- -- Regexps allow us to search for patterns within text.  Once we have found that pattern, we can do any number of things with it:
-* Print it out;
-* Use it as the basis for a search-and-replace operation;
-* Or, dig deeper into the match, extracting portions of it.
-
- -- Regexps have been around for many years, but as the quantity of text produced becomes ever larger, the need for finding ways to search for patterns has become ever more urgent. 
 
 ### html
 
