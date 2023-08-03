@@ -22,7 +22,16 @@ Below is the summary of my notes from the book:
    5. [Repeated values for index in pandas series](#14)
    6. [Fancy indexing](#15)
    7. [Summary](#16)
-2. [Pandas DataFrames](#2)
+2. [Pandas DataFrames](#17)
+   1. [DataFrames Fundamentals](#18)
+   2. [Bracket vs. dot notation](#19)
+   3. [Adding columns to a dataframe](#20)
+   4. [Retrieving and Assigning with loc](#21)
+   5. [DataFrames methods](#22)
+      1. [pd.concat()](#23)
+      2. [query()](#24)
+   6. [NaN and missing data](#25)
+      1. [interpolation](#26)
 
 4. [Importing and exporting data](#3)
 
@@ -199,34 +208,39 @@ In this chapter, we saw that a pandas series provides us with some powerful tool
 
 In the next chapter, we’ll expand our reach to look at data frames, the two-dimensional data strucures that most people think of when they work with pandas.
 
-<a name="2"></a>
-## 2. Pandas DataFrames
-HERE
-Data frames are two-dimensional tables that look and work similar to an Excel spreadsheet. The rows are accessible via an index—yes, the same index that we have been using so far with our series! **So long as you use .loc and .iloc to retrieve elements via the index, you’ll be fine.**
+<a name="17"></a>
+## Pandas DataFrames
+
+<a name="18"></a>
+### DataFrames Fundamentals
+
+Data frames are two-dimensional tables that look and work similarly to an Excel spreadsheet. The rows are accessible via an index—yes, the same index that we have been using so far with our series! **So long as you use .loc and .iloc to retrieve elements via the index, you’ll be fine.**
 
 But of course, data frames also have columns, each of which has a name. Each column is effectively its own series, which means that it has an independent dtype from other columns.
 
 In a typical data frame, each column represents a feature, or attribute, of our data, while each row represents one sample.
 
-We’ll also see how just about every series method will also work on a data frame, returning one value per data frame column.
+<a name="19"></a>
+### Bracket vs. dot notation 
 
-### BRACKETS OR DOTS?
+Bracket:
 
-When we’re working with a series, we can retrieve values in several different ways: Using the index (and loc), using the position (and iloc), and also using plain ol' square brackets, which is essentially equivalent to loc.
+When we’re working with a series, we can retrieve values in several different ways: Using the index (and loc), using the position (and iloc), and also using plain ol' square brackets ("[" and "]"), which is essentially equivalent to loc.
 
 When we work with data frames, we **must use loc or iloc.** That’s because square brackets refer to the columns. If you try to retrieve a row, via the index, using square brackets, you’ll get an error message saying that no such column exists.
 
 Square brackets always refer to columns, and never to rows. **Except, that is, when you pass them a slice, in which they look at the rows.** If you want to retrieve multiple columns, then you must use **fancy indexing.** You cannot use a slice.
 
-**dot notation**
+dot notation: 
 
 If you want to retrieve the column colname from data frame df, you can say df.colname. **THIS DOES NOT WOTK** when columns names include spaces and other illegal-in-Python-identifer characters. 
 
+<a name="20"></a>
 ### Adding columns to a dataframe
 
 We just assign to the data frame, using the name of the column that we want to spring into being. It’s typical to assign a series, but you can also assign a NumPy array or list, so long as it is of the same length as the other, existing columns.
 
-There is another way to add a column to a pandas data frame, namely the assign method. I generally prefer to just add a new column directly, as described here. But assign returns a new data frame, rather than modifying an existing one, which can come in handy.
+There is another way to add a column to a Pandas data frame, namely the assign method. Preferably use just add a new column directly, as described here. But assign returns a new data frame, rather than modifying an existing one, which can come in handy.
 
 Column names are unique—so just as with a dictionary, assigning to an existing column will replace it with the new one. That said, if your data frame’s columns are not of the same dtype, you might find yourself with a SettingWithCopyWarning when assigning for replacement. 
 
@@ -277,6 +291,7 @@ Finally, if your data frame’s columns are not of the same dtype, then you migh
 The above code will replace the current values of column d with new values, all of them having a dtype of float16.
 
 ### pd.concat
+We’ll also see how just about every **series method** will also work on a data frame, returning one value per data frame column.
 
 The pd.concat function concatenates dataframes with each other. It’s a top-level pandas function, and takes a list of data frames you would like to concatenate. By default, pd.concat assumes that you want to join them top-to-bottom, but you can do it side-to-side if you want by setting the axis parameter.
 
