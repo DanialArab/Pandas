@@ -30,9 +30,9 @@ Below is the summary of my notes from the book:
    5. [DataFrames methods/functions](#22)
       1. [pd.concat()](#23)
       2. [query()](#24)
-      3. [fillna() and dropna()]
-      4. [count()]
-      5. [interpolate()]
+      3. [fillna() and dropna()](#25)
+      4. [count()](#26)
+      5. [interpolate()](#27)
 
 4. [Importing and exporting data](#3)
 
