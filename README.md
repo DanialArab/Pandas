@@ -47,15 +47,15 @@ Below is the summary of my notes from the book:
 
 5. [Cleaning data](#5)
 
-7. [Grouping, joining, and sorting](#6)
+6. [Grouping, joining, and sorting](#6)
 
-8. [Strings](#7)
+7. [Strings](#7)
 
-9. [Dates and times](#8)
+8. [Dates and times](#8)
 
-10. [Visualization](#9)
+9. [Visualization](#9)
 
-11. [Performance](#10)
+10. [Performance](#10)
 
 Pandas is all about analyzing data. And a major part of the analysis that we do in Pandas can be phrased as, **"Where this is the case, show me that"** (Reuven Lerner).
 
@@ -439,7 +439,10 @@ to get the dataframe's details:
 <a name="29"></a>
 ## Importing and exporting data
 
-**CSV, the non-standard standard**
+<a name="30"></a>
+### CSV files
+
+**CSV, the non-standard standard**!
 
 At its heart, CSV assumes that your data can be described as a two-dimensional table. The rows are represented as rows in the file, and the columns are separated by… well, they’re separated by commas, at least by default. CSV files are text files, which means that you can read (and edit) them without special tools.
 
@@ -497,6 +500,9 @@ Actually, there is another way to do it: You can specify which columns you want 
 
 Will this work? Yes, it will, and in many cases, it might be the preferred way to go. However, I have two problems with it: First, I find it somewhat annoying to find the integer positions for the columns we want to load. And secondly, when I ran this code on my computer, I got the "low memory" warning that we’ve sometimes seen in previous examples. I thus decided to avoid the annoyance of finding the desired columns' numeric locations and the low-memory warning, and to use the two-step column renaming that appears in the solution.
 
+<a name="31"></a>
+### Compressed files
+
 **compressed files can be directly impoted into pandas**
 
 You might have noticed that the files I’ve provided both have a .csv.gz suffix. This means that they are compressed with "gzip"—but you don’t need to uncompress them before loading, because **Pandas is smart enough to automatically do so when we run read_csv**.
@@ -528,8 +534,10 @@ In many cases, CSV files published to a URL will require authentication via a us
 
 What always amazes me about using pd.read_csv is how easy it is to read CSV data from a URL. Other than the fact that the data comes from the network, it works the same as reading from a file. Among other things, we can select which columns we want to read using the usecols parameter.
 
-                                       
-### tips on reading text file through pd.read_csv
+<a name="32"></a>
+### Text files
+
+tips on reading text file through pd.read_csv
 
 First just open it to see what is the field separator. Then see if you have any comments and if so see how the start of a comment line is mared, then you need to do header = None b/c it is not a csv file and so definitely doesn’t have headers. then you may want to pass names including your desired names for the dataframe you will be creating. 
 
