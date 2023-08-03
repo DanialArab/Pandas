@@ -34,14 +34,14 @@ Below is the summary of my notes from the book:
       4. [count()](#26)
       5. [interpolate()](#27)
       6. [memory_usage()](#28)
-   6. [Three ways to optimize your Pandas data frame's memory usage](#28)
-3. [Importing and exporting data](#29)
-   1. [CSV files](#29)
-   2. [Compressed files](#29)
-   3. [Text files](#29)
-   4. [html files](#29)
-   5. [JSON files](#29)
-   6. [Excel files](#29)
+   6. [Three ways to optimize Pandas data frame's memory usage](#29)
+3. [Importing and exporting data](#30)
+   1. [CSV files](#31)
+   2. [Compressed files](#32)
+   3. [Text files](#33)
+   4. [html files](#34)
+   5. [JSON files](#35)
+   6. [Excel files](#36)
 
 4. [Indexes](#4)
 
@@ -430,7 +430,7 @@ to get the dataframe's details:
       df.info(memory_usage = 'deep')
 
 <a name="29"></a>
-### Three ways to optimize your Pandas data frame's memory usage
+### Three ways to optimize Pandas data frame's memory usage
 
 + choose your columns wisely using "usecols", df.columns gives me the name of columns 
 + choose dtypes appropriately 
