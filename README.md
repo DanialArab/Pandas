@@ -33,8 +33,11 @@ Below is the summary of my notes from the book:
       3. [fillna() and dropna()](#25)
       4. [count()](#26)
       5. [interpolate()](#27)
-3. [Importing and exporting data](#28)
-   1. [
+      6. [memory_usage()](#28)
+   6. [Three ways to optimize your Pandas data frame's memory usage](#28)
+3. [Importing and exporting data]
+   1. []
+   2. []
 
 5. [Indexes](#4)
 
@@ -411,6 +414,24 @@ So, how should we actually set these values? It’s actually pretty straightforw
                                      
 If you use this syntax for all of your assignments, you won’t ever see that dreaded SettingWithCopyWarning message. You’ll be able to use the **same syntax for retrieval and assignment**. And you can even be sure that things are running pretty efficiently.
 
+<a name="28"></a>
+#### memory_usage()
+
+We’ll talk more about this in future chapters, but the memory_usage method allows you to see how much memory is being used by each column in a data frame. It returns a series of integers, in which the index lists the columns and the values represent the memory used by each column. 
+
+      df.memory_usage()       
+
+to get the dataframe's details:
+
+      df.info(memory_usage = 'deep')
+
+<a name="29"></a>
+### Three ways to optimize your Pandas data frame's memory usage
+
++ choose your columns wisely using "usecols", df.columns gives me the name of columns 
++ choose dtypes appropriately 
++ remove rows that you don't need through cleaning
+                              
 <a name="3"></a>
 ## 3. Importing and exporting data
 
@@ -489,23 +510,7 @@ When teaching data science, I often use the phrase "know your data." That’s be
 
 Most data sets come with a "data dictionary," a file that describes the columns, their types, their meanings, and their ranges. It’s almost always worth your while to read a data dictionary when starting to analyze the data. In many cases, the dictionary will give you insights into the data.
                                  
-### Three ways to optimize your Pandas data frame's memory usage
-
-df.info(memory_usage = 'deep') gives detailes
-                                       
-    1. choose your columns wisely using "usecols", df.columns gives me the name of columns 
-    2. choose dtypes appropriately 
-    3. remove rows that you don't need through cleaning 
-
-reference: reuven's youtube channel: https://www.youtube.com/watch?v=q3k3UrunY3M
-
-### memory_usage method
-
-We’ll talk more about this in future chapters, but the memory_usage method allows you to see how much memory is being used by each column in a data frame. It returns a series of integers, in which the index lists the columns and the values represent the memory used by each column. 
-
-    df.memory_usage()       
-
-### usecols
+#### usecols:
 
 The usecols parameter to pd.read_csv allows us to select which columns from the CSV file will be kept around. The parameter takes a list as an argument, and that list can either contain integers (indicating the numeric index of each column) or strings representing the column names. I generally prefer to use strings, since they’re more readable, and that’s what I did here.
 
@@ -518,6 +523,7 @@ Why is this important and useful? Because there are numerous systems that produc
 In many cases, CSV files published to a URL will require authentication via a username and password. In some cases, sites allow you to include such authentication details in the URL. For those that don’t, you won’t be able to retrieve directly via read_csv. Rather, you’ll need to retrieve the data separately, perhaps using the excellent third-party **requests package**, and then create a StringIO with the contents of the retrieved data.
 
 What always amazes me about using pd.read_csv is how easy it is to read CSV data from a URL. Other than the fact that the data comes from the network, it works the same as reading from a file. Among other things, we can select which columns we want to read using the usecols parameter.
+
                                        
 ### tips on reading text file through pd.read_csv
 
