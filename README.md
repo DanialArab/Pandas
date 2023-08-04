@@ -55,16 +55,17 @@ Below is the summary of my notes from the book:
       3. [xs()](#47)
       4. [IndexSlice()](#48)
 5. [Cleaning data](#40)
+   1. [
 
-6. [Grouping, joining, and sorting](#6)
+7. [Grouping, joining, and sorting](#6)
 
-7. [Strings](#7)
+8. [Strings](#7)
 
-8. [Dates and times](#8)
+9. [Dates and times](#8)
 
-9. [Visualization](#9)
+10. [Visualization](#9)
 
-10. [Performance](#10)
+11. [Performance](#10)
 
 Pandas is all about analyzing data. And a major part of the analysis that we do in Pandas can be phrased as, **"Where this is the case, show me that"** (Reuven Lerner).
 
@@ -938,21 +939,21 @@ When you cannot get what you want with playing with loc, xs, and idx is a good s
 HERE
 I’ve often heard data scientists say that **80 percent of their job involves cleaning data**. What does it mean to "clean data"? Here is a partial list:
 
-    * rename columns
-    * rename the index
-    * remove irrelevant columns
-    * split one column into two
-    * combine two or more columns into one
-    * remove non-data rows
-    * remove repeated rows
-    * remove rows with missing data (aka NaN)
-    * replace NaN data with a single value
-    * replace NaN data via interpolation
-    * standardize strings
-    * fix typos in strings
-    * remove whitespace from strings
-    * correct the types used for columns
-    * identify and remove outliers
+* rename columns
+* rename the index
+* remove irrelevant columns
+* split one column into two
+* combine two or more columns into one
+* remove non-data rows
+* remove repeated rows
+* remove rows with missing data (aka NaN)
+* replace NaN data with a single value
+* replace NaN data via interpolation
+* standardize strings
+* fix typos in strings
+* remove whitespace from strings
+* correct the types used for columns
+* identify and remove outliers
 
 We have already discussed some of these techniques in previous chapters. But the importance of cleaning your data, and thus ensuring that your analysis is as accuraet is possible, cannot be overstated.
 
