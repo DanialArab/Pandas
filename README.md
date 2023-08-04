@@ -63,9 +63,9 @@ Below is the summary of my notes from the book:
 6. [Grouping, joining, and sorting](#55)
    1. [Sorting](#55)
    2. [Grouping](#55)
-   3.  [Joining](#55)
-   4.  [Normalization](#55)
-   5.  [Window functions](#55)
+   3. [Joining](#55)
+   4. [Normalization](#55)
+   5. [Window functions](#55)
       1. [Expanding window function](#55)
       2. [Rolling window function](#55)
       3. [pct_change window function](#55)
@@ -1116,8 +1116,8 @@ Thus, a big part of cleaning real-world data involves making it more consistent�
 Cleaning data is one of the most important parts of data analysis, although it’s not very glamorous. In this chapter, we saw that effective cleaning of data **requires not just knowing the techniques, but also applying judgment**—knowing when you can allow null or duplicate values, and then what you should do with them. pandas comes with a wide variety of tools that we can use in cleaning our data, from removing NaN values to replacing them, to replacing existing values, to running custom functions on each row in a series or data frame. The techniques that we explored in this chapter, along with the interpolate method that we saw before, are important tools in your data-cleaning toolbox, and will likely come up in many of the projects you work on.
 
 
-<a name="6"></a>
-## 6. Grouping, joining, and sorting
+<a name="55"></a>
+## Grouping, joining, and sorting
 
 We often need to break our input data apart, to zoom in on particularly interesting subsets, to combine data from different sources, to transform the data into a new format or value, and then to sort it according to a variety of criteria. This combination of techniques is collectively known in the pandas world as **"split-apply-combine."** It’s common to use one or more of these when analyzing data. In this chapter, we’ll explore these techniques.
 
@@ -1151,7 +1151,8 @@ HOWEVER, its convenient alias, **T, is not a method, and thus should not be invo
 
 A score of 1 indicates that it’s 100% positively correlated, meaning that when one column goes up, the other column goes up by the same degree. A score of -1 indicates that it’s 100% negatively correlated, meaning that when one column goes up, the other goes down by the same degree. A score of 0 indicates that there is no correlation at all. Generally speaking, we say that the closer to 1 (or -1) the score, the more highly correlated two columns will be. By default, corr uses what’s known as the "Pearson correlation," about which you can read more here: https://en.wikipedia.org/wiki/Pearson_correlation_coefficient
 
-### sorting
+<a name="56"></a>
+### Sorting
 
 Data in relational (SQL) databases isn’t stored in any particular order. There are several reasons for this:
 
@@ -1179,7 +1180,8 @@ Notice that we have to use iloc here, and not loc. That’s because **loc works 
 
 So we need to use iloc or head/tail to retrieve the first/last 20 rows, because the index was all scrambled (means disordered) after our **sort operation**. But you can pass **ignore_index=True to sort_values**, and then the resulting data frame will have a numeric index, starting at 0.
 
-### grouping
+<a name="57"></a>
+## Grouping
 
 Sometimes we want to run an aggregate function on each piece of our data. 
 
@@ -1230,7 +1232,8 @@ Normally, groupby sorts the group keys. If you don’t want to see this, or if y
 * Finally, which aggregation method(s) will we be running?
 
 
-### joining 
+<a name="58"></a>
+### Joining 
 
 Like grouping, joining is a concept that you might have encountered previously, when working with relational databases. The joining functionality in pandas is quite similar to that sort of database, although the syntax is quite different.
 
@@ -1267,7 +1270,8 @@ point from reuven:
 I always like to create **separate data frames, and then join them together.** This not only lets me do things step by step, but also ensures that I can debug, improve, and rerun my steps more easily.
 
 
-### normalization
+<a name="59"></a>
+### Normalization
 
 Separating your data into two or more pieces, so that **each piece of information appears only a single time, is known as "normalization."** There are all sorts of formal theories and descriptions of normalization, but it all boils down to **keeping the information in separate places**, and joining data frames when necessary.
 
@@ -1329,6 +1333,7 @@ Yes, that's correct! The merge method in pandas works by merging two DataFrames 
 
 By default, join performs a "left join," meaning that there might be NaN values in the column(s) from the right side. However, merge performs an "inner join" by default, meaning that it uses the intersection of the indexes from the right and left. As a result, NaN values won't occur thanks to the join (but they might come in thanks to NaN values in the input frames.
 
+<a name="60"></a>
 ### Window functions
 
 let's say i have:
@@ -1342,7 +1347,8 @@ If we want to find out how much we sold, total, through the current quarter? Tha
 
 pandas provides us with "window functions." There are several different types of window functions, but the basic idea is that they allow us to **run an aggregate function, such as mean, on subsections of our data frame.**
 
-### 1. expanding window function: 
+<a name="61"></a>
+#### Expanding window function 
 
 What I described earlier, that we would like to know, for each quarter, how much we revenue we had through that quarter, is a classic example of a window function. This is known as an **"expanding window,**" because we run the function with an ever-expanding number of lines—first one line, then two, then three… all the way up to the entire data frame.
 
@@ -1355,7 +1361,8 @@ Perhaps we don’t want to get a cumulative total, but rather want to get a **ru
 In this case, the output from expanding will be 100, 125, 150, and 175.
 
 
-### 2. rolling window function:
+<a name="62"></a>
+#### Rolling window function
 
 With rolling window functions we determine **how many rows** will be considered to be part of the window. For example, if the window size is 3, then we’ll run the aggregation function on row index 0-2, then 1-3, then 2-4, etc., until we get to the end of the data frame. For example, if you want to find out the mean of rows that are close to one another, you can do it as follows:
 
@@ -1363,7 +1370,8 @@ With rolling window functions we determine **how many rows** will be considered 
 
 In the above code, rolling is how I indicate that I want to run a rolling window function, and the argument 3 indicates that I want to have three rows in each window. We’ll thus invoke mean on rows 0-2, then 1-3, then 2-4, then 3-5, etc. T**he series that we get back from this call will put the result of mean in the same location as the third (and final) row in our rolling window. This means that row indexes 0 and 1 will have NaN values.**
 
-### 3. pct_change window function:
+<a name="63"></a>
+#### pct_change window function
 
 A third type of window function is pct_change. When we run this on a series, we get back a new series, with NaN at row index 0. The remaining rows indicate the percentage change from the previous row to the current one:
 
@@ -1375,6 +1383,7 @@ The result is calculated as **(later_row - earlier_row) / earlier_row**:
  
 pct_change is great for finding **how much your values have gone up, or down, from row to row.**
 
+<a name="64"></a>
 ### Filtering and transforming
 
 #### filter method
