@@ -87,8 +87,12 @@ Below is the summary of my notes from the book:
     1. [Box and Whisker plots](#79)
     2. [scatter matrix](#80)
     3. [SEABORN](#81)
-
-11. [Performance](#10)
+10. [Performance](#82)
+    1. [Memory usage](#82)
+    2. [Saving Memory with categories](#83)
+    3. [APACHE ARROW](#84)
+    4. [Tracking time](#85)
+    5. [Speeding things up with eval and query](#86)
 
 Pandas is all about analyzing data. And a major part of the analysis that we do in Pandas can be phrased as, **"Where this is the case, show me that"** (Reuven Lerner).
 
@@ -1989,8 +1993,8 @@ sns.displot(x='max_temp', data=df, hue='city', row='city')
 These are just some of Seaborn’s many capabilities. If you’re interested in seeing everything that Seaborn can do, I strongly recommend you check out the documentation at http://seaborn.pydata.org/. I’ve grown to really like the Seaborn approach to visualization—not only does it produce very nice-looking plots, but I find the API easier to understand and work with than many others.
 
 
-<a name="10"></a>
-## 10. Performance
+<a name="82"></a>
+## Performance
 
 **good to knows**
 
@@ -2016,6 +2020,7 @@ df.eval('v + 300'): Perform actions and queries on a data frame
 
 %timeit 3+2 : Python module for benchmarking code speed, and a Jupyter "magic command" for invoking it
 
+<a name="83"></a>
 ### Memory usage 
 
 How much memory does this data set consume? That’s an important question when working with pandas, because all of our data needs to fit into memory. We can find out by running the memory_usage method on our data frame:
@@ -2043,7 +2048,8 @@ We can tell pandas to **include all of the objects in its size calculation by pa
 * (also the third strategy is to remove rows that you don't need through cleaning, mentioned in reuven's youtube video on memorry optimization)
 
 
-## Saving Memory with categories
+<a name="84"></a>
+### Saving Memory with categories
 
 The majority of the memory is being used by **strings**. This means that we need to somehow reduce the size or number of the text strings in our data frame.
 
@@ -2075,6 +2081,7 @@ Another potential benefit of creating this category type is that if we need the 
 
 **point**. We would benefit most by first standardizing the spellings, and only after creating the category. The more times a string is repeated, the greater the benefit from using a category for that string. When we standardize the spellings, we reduce the number of different strings in a column, and increase the number of times it repeats -- thus strengthening the argument for using a category.
 
+<a name="85"></a>
 ### APACHE ARROW
 
 There’s no doubt that CSV files are convenient to work with. Not only does every programming language and data-analysis system knows how to read from and write to them, but they’re readable by people, too. Heck, we can even go in and edit CSV files by hand, when we need to. The same could be said for JSON, which has also become popular in the last few years. JSON can handle more complex data structures than CSV, but is still a **text-based format.**
@@ -2105,7 +2112,8 @@ While it is still considered experimental as of this writing, you can now pass a
 
 Over the coming years, I expect that the Arrow backend, as well as the feather format, will become increasingly common among users of pandas and other open-source data analysis tools. CSV and JSON aren’t going away, but as data sets grow in size, feather’s faster speed and cross-platform compatibility will become more dominant, and should assume a greater role in your arsenal.
 
-### keep track of time
+<a name="86"></a>
+### Time tracking 
 
 We’ll need some way to keep track of time. Python’s time module, part of the standard library, provides a number of different methods that could theoretically be used, but it’s generally considered best to use **time.perf_counter()**. This function uses the highest-resolution clock available, and returns a float indicating a number of seconds. The number returned by perf_counter should not be relied upon for calculating the current date and time—but if used within the same program, it can be used to measure the passage of time, which is precisely what we’ll want to do. The reference point of the returned value is **undefined**, so that **only the difference between the results of two calls is valid.**
 
@@ -2127,6 +2135,7 @@ When using the **%timeit magic command in Jupyter, don’t forget:**
     -- If you’re timing a function, don’t forget to put () after the function’s name.
 
 
+<a name="87"></a>
 ### Speeding things up with eval and query
 
 Over the course of this book, I’ve emphasized a number of techniques that you should use to speed up your pandas performance:
