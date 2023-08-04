@@ -648,7 +648,7 @@ Finally: It’s often tempting to set a dtype to be an integer value. But rememb
 | float64 (double-precision floating-point) | (-1.79 x 10^308 to 1.79 x 10^308) | 1.79 x 10^308 |
 
 <a name="39"></a>
-## 4. Indexes
+## Indexes
 
 <a name="40"></a>
 ### Indexes Fundamentals
@@ -667,6 +667,7 @@ As of this writing, the set_index method (along with many others in pandas) supp
 
 Thus while it might seem wasteful to call set_index and then assign its result back to df, this is the preferred, idiomatic way that we are to do things in pandas.
 
+<a name="41"></a>
 ### Working with multi-indexes
 
 Every data frame has an index, giving labels to the rows. We have already seen that we can use the loc accessor to retrieve one or more rows using the index. For example, I can say
@@ -772,7 +773,8 @@ read_csv also has a **index_col** parameter. If we pass an argument to that para
                     usecols=['Year', 'State.Code', 'Total.Math', 'Total.Test-takers', 'Total.Verbal'],
                     index_col=['Year', 'State.Code'])
 
-### Sorting by index
+<a name="42"></a>
+###  Sorting by index
 
 When we talk about sorting data in pandas, we’re usually referring to sorting the **data**. For example, I might want to have the rows in my data frame sorted by price or by regional sales code. We’ll talk more about that kind of sorting in Chapter 6.
 
@@ -860,7 +862,8 @@ In other words, IndexSlice is syntactic sugar, allowing pandas to look and feel 
 
 When you cannot get what you want with playing with loc, xs, and idx is a good sign of a need to consider changing the existing indexes and maybe setting new index using **set_index** and **reset_index** methods.
 
-### Pivot tables
+<a name="43"></a>
+###  Pivot tables
 
 So far, we have seen how to use indexes to restructure our data, making it easier to retrieve different slices of the information that it contains, and thus answer particular questions more easily. But the questions we have been asking have all had a single answer. In many cases, we want to apply a particular aggregate function to many different combinations of columns and rows. One of the most common and powerful ways to accomplish this is with a "pivot table."
 
