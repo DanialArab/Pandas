@@ -45,18 +45,27 @@ Below is the summary of my notes from the book:
    7. [Dataframes and dtype](#37)
    8. [How to wisely choose the wisest dtype](#38)
 4. [Indexes](#39)
+   1. [Indexes Fundamentals](#40) 
+   2. [Working with multi-indexes](#41)
+   3. [Sorting by index]
+   4. [xs and IndexSlice methods]
+   5. [Pivot tables]
+   6. [methods]
+      1. [set_index()]
+      2. [isin()]
+   10. 
 
-5. [Cleaning data](#5)
+6. [Cleaning data](#5)
 
-6. [Grouping, joining, and sorting](#6)
+7. [Grouping, joining, and sorting](#6)
 
-7. [Strings](#7)
+8. [Strings](#7)
 
-8. [Dates and times](#8)
+9. [Dates and times](#8)
 
-9. [Visualization](#9)
+10. [Visualization](#9)
 
-10. [Performance](#10)
+11. [Performance](#10)
 
 Pandas is all about analyzing data. And a major part of the analysis that we do in Pandas can be phrased as, **"Where this is the case, show me that"** (Reuven Lerner).
 
@@ -640,7 +649,10 @@ Finally: It’s often tempting to set a dtype to be an integer value. But rememb
 
 <a name="39"></a>
 ## 4. Indexes
-HERE
+
+<a name="40"></a>
+### Indexes Fundamentals
+
 Every data frame has an index (describing the rows) and a list of columns. Indexes in Pandas are extremely flexible and powerful; an index can even be hierarchical, allowing us to query our data in sophisticated ways. Understanding how we can create, replace, and use indexes is a crucial part of working with Pandas. In this chapter, we’ll practice working with indexes in a variety of ways. We’ll also see how we can change a data frame’s index, and how we can use it to summarize our data in a **"pivot table."**
 
 We have already seen numerous examples of how to retrieve one or more rows from a data frame **using its index, along with the loc atttribute.** We don’t necessarily need to use the index to select rows from a data frame, but it does make things easier to understand and for clearer code. For this reason, we often want to use one of a **data frame’s existing columns as an index**. Sometimes, we’ll want to do this permanently, while at other times, we’ll want to do it briefly, just to make our queries clearer.
