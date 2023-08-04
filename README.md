@@ -83,11 +83,10 @@ Below is the summary of my notes from the book:
     1. [Creating DATETIME and TIMEDELTA objects](#75)
        1. [datetime](#76)
        2. [timedelta](#77)
+10. [Visualization](#78)
+    1. []
 
-
-11. [Visualization](#9)
-
-12. [Performance](#10)
+11. [Performance](#10)
 
 Pandas is all about analyzing data. And a major part of the analysis that we do in Pandas can be phrased as, **"Where this is the case, show me that"** (Reuven Lerner).
 
@@ -1740,9 +1739,9 @@ When we run resample, we tell it what time-period granularity we’ll want, givi
 
     df_wti[df_wti.index.is_quarter_end]
     
-<a name="9"></a>
-## 9. Visualization
-
+<a name="78"></a>
+## Visualization
+HERE
 The 900-pound gorilla in the world of Python data visualization is Matplotlib. There’s no doubt that Matplotlib is powerful—but it’s also overwhelming to many people. Fortunately, pandas provides a visualization API that allows us to create plots from our data without having to use Matplotlib explicitly. We thus get the best of both worlds—the ability to plot information in our data frame, without having to learn too much about Matplotlib’s API. However, if and when you need more power, Matplotlib is there, under the hood, available to anyone who wants to use it.
 
 This chapter will also provide you with the opportunity to explore one of the nicest features of the Jupyter notebook, the fact that it **keps images inline**. Whether it’s on your own or by exploring the notebooks that I’ve prepared while writing this book, I strongly encourage you to experiment with Jupyter’s plotting capabilities. The ability to have data, code, and plots in the same document is a game changer for many projects, making it possible for data scientists to both share information and get input from less technical colleagues.
