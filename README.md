@@ -80,7 +80,10 @@ Below is the summary of my notes from the book:
       5. [explode()](#72)
       6. [get_dummies()](#73)
 9. [Dates and times](#74)
-    1. [
+    1. [Creating DATETIME and TIMEDELTA objects](#75)
+       1. [datetime](#76)
+       2. [timedelta](#77)
+
 
 11. [Visualization](#9)
 
