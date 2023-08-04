@@ -42,8 +42,9 @@ Below is the summary of my notes from the book:
    4. [html files](#34)
    5. [JSON files](#35)
    6. [Excel files](#36)
-
-4. [Indexes](#4)
+   7. [Dataframes and dtype](#37)
+   8. [How to wisely choose the wisest dtype](#38)
+4. [Indexes](#39)
 
 5. [Cleaning data](#5)
 
@@ -436,10 +437,10 @@ to get the dataframe's details:
 + choose dtypes appropriately 
 + remove rows that you don't need through cleaning
                               
-<a name="29"></a>
+<a name="30"></a>
 ## Importing and exporting data
 
-<a name="30"></a>
+<a name="31"></a>
 ### CSV files
 
 **CSV, the non-standard standard**!
@@ -500,7 +501,7 @@ Actually, there is another way to do it: You can specify which columns you want 
 
 Will this work? Yes, it will, and in many cases, it might be the preferred way to go. However, I have two problems with it: First, I find it somewhat annoying to find the integer positions for the columns we want to load. And secondly, when I ran this code on my computer, I got the "low memory" warning that we’ve sometimes seen in previous examples. I thus decided to avoid the annoyance of finding the desired columns' numeric locations and the low-memory warning, and to use the two-step column renaming that appears in the solution.
 
-<a name="31"></a>
+<a name="32"></a>
 ### Compressed files
 
 **compressed files can be directly impoted into pandas**
@@ -534,12 +535,12 @@ In many cases, CSV files published to a URL will require authentication via a us
 
 What always amazes me about using pd.read_csv is how easy it is to read CSV data from a URL. Other than the fact that the data comes from the network, it works the same as reading from a file. Among other things, we can select which columns we want to read using the usecols parameter.
 
-<a name="32"></a>
+<a name="33"></a>
 ### Text files
 
 tips on reading text file through pd.read_csv
 
-First just open it to see what is the field separator. Then see if you have any comments and if so see how the start of a comment line is mared, then you need to do header = None b/c it is not a csv file and so definitely doesn’t have headers. then you may want to pass names including your desired names for the dataframe you will be creating. 
+First, just open it to see what is the field separator. Then see if you have any comments and if so see how the start of a comment line is made, then you need to do header = None b/c it is not a csv file and so definitely doesn’t have headers. then you may want to pass names including your desired names for the dataframe you will be creating. 
 
 #### 1. sep
 CSV files are named for the default field separator, the comma. By default, pandas assumes that we have comma-separated values. It’s fine if we want to use another character, but then we’ll need to specify that in the sep keyword argument. If our separator is :, so we’ll pass sep=':' to read_csv.
@@ -558,27 +559,30 @@ if your file is not a csv file and like it is a text file. In this case, if we d
 
 ### How to specify more than one separator
 
-I’m often asked if we can specify more than one separator. For example, what if fields can be separated by either : or by ,? What do we do then?
+For example, what if fields can be separated by either : or by ,? What do we do then?
 
-pandas actually has a great solution: If sep contains more than one character, then it is treated as a **regular expression**. So if you want to allow for either colons or commas, you could pass a separator of [:,]. If that looks reasonable to you, then congratulations: You probably know about regular expressions. If you don’t know them, then I strongly encourage you to learn them! Regular expressions are extremely useful to anyone working with text, which is nearly every programmer. I have a free tutorial on regular expressions using PPython at RegexpCrashCourse.com/, if you’re interested.
+pandas actually has a great solution: If sep contains more than one character, then it is treated as a **regular expression**. So if you want to allow for either colons or commas, you could pass a separator of [:,]. If that looks reasonable to you, then congratulations: You probably know about regular expressions. If you don’t know them, then I strongly encourage you to learn them! Regular expressions are extremely useful to anyone working with text, which is nearly every programmer. There is a free tutorial on regular expressions using Python at RegexpCrashCourse.com.
 
 The big downside to using regular expressions to handle field separators is that it requires the use of a Python-based CSV parser. By default, pandas uses a C-based parser, which runs faster and uses less memory. Consider whether you really need this functionality, and thus the performance hit that the Python-based parser creates.
                                       
-
-### html
+<a name="34"></a>
+### html files 
 
 The **pd.read_html** function, like pd.read_csv, takes a file-like object or a URL. It assumes that it’ll encounter HTML-formatted text containing at least one table. It turns each table into a data frame, then returns a list of those data frames.
       
-### JSON
+<a name="35"></a>
+### JSON files 
 
 There’s no doubt that CSV is an important, useful, and popular format. But in some ways, it has been eclipsed by another format: JSON, aka "JavaScript Object Notation." **JSON allows us to store numbers, text, lists, and dictionaries in a text format that’s both readable and writable with a wide variety of programming languages**. Because it’s both easier to work with and smaller than XML, while also more expressive than CSV, it’s no surprise that JSON has become a common format for both storing and exchanging data. JSON has also become the standard format for Internet APIs, allowing us to access a variety of services in a cross-platform manner.
 
 Just as we can retrieve CSV-formatted data with pd.read_csv, we can retrieve JSON-formatted data with **pd.read_json**.
       
-### excel file
+<a name="36"></a>
+### excel files
 
 Also like read_csv, the read_excel method has index_col, usecols, and names parameters, allowing you to specify which columns should be used for the data frame, what they should be called, and whether one or more should be used as the data frame’s index.
       
+<a name="37"></a>
 ### Dataframes and dtype
 
 In Chapter 1, we saw that every series has a dtype describing the type of data that it contains. We can retrieve this data using the dtype attribute, and we can tell pandas what dtype to use when creating a series using the dtype parameter when we invoke the Series class.
@@ -601,9 +605,9 @@ This can potentially lead to a problem, if it finds (for example) values that lo
 
 One way to avoid this mixed-dtype problem is to tell pandas not to skimp on memory, and that it’s OK to examine all of the data. You can do that by passing a False values to the **low_memory parameter in read_csv.** By default, low_memory is set to True, resulting in the behavior that I’ve described here. But remember that setting low_memory to False might indeed use lots of memory, a potentially big problem if your dataset is large.
 
-Notice that I passing the low_memory=False keyword argument tells pandas that I had enough RAM on my computer that it could look through all of the rows in the data set, when trying to determine what dtype to assign to each column.
+Notice that passing the low_memory=False keyword argument tells pandas that I had enough RAM on my computer that it could look through all of the rows in the data set, when trying to determine what dtype to assign to each column.
 
-**from chatGPT:**
+Some points:
 
 The low_memory parameter in pandas is used to control the memory usage when reading a large file. When set to True, pandas will attempt to read the file **in chunks**, which can **reduce the memory usage but may also slow down the read operation**. When set to False, pandas will read the entire file into memory at once, which can **speed up the read operation but may also consume a lot of memory.**
 
@@ -613,7 +617,8 @@ By default, the low_memory parameter is set to True. If you have enough memory a
 
 Finally: It’s often tempting to set a dtype to be an integer value. But remember that **if the column contains NaN, then it cannot be defined as an integer dtype. Instead, you’ll need to read the column as floating-point data, remove or interpolate the NaN values, and then convert the column (using astype) to the integer type you want.**
       
-### How to wisely choose the wisest dtype
+<a name="38"></a>
+###  How to wisely choose the wisest dtype
 
 * Like for example for trip_distance, total_amount, and tip_amount it seems we do need float but how to choose its type like float64 is more appropriate or float16? you can take a look at the following table and see if the maximum number in your column is below the max value that can be represented by each dtype then that dtype is safe to use:
       
@@ -633,9 +638,9 @@ Finally: It’s often tempting to set a dtype to be an integer value. But rememb
 | float32 (single-precision floating-point) |(-3.4028235 x 10^38 to 3.4028235 x 10^38) | 3.4028235 x 10^38 |
 | float64 (double-precision floating-point) | (-1.79 x 10^308 to 1.79 x 10^308) | 1.79 x 10^308 |
 
-<a name="4"></a>
+<a name="39"></a>
 ## 4. Indexes
-
+HERE
 Every data frame has an index (describing the rows) and a list of columns. Indexes in Pandas are extremely flexible and powerful; an index can even be hierarchical, allowing us to query our data in sophisticated ways. Understanding how we can create, replace, and use indexes is a crucial part of working with Pandas. In this chapter, we’ll practice working with indexes in a variety of ways. We’ll also see how we can change a data frame’s index, and how we can use it to summarize our data in a **"pivot table."**
 
 We have already seen numerous examples of how to retrieve one or more rows from a data frame **using its index, along with the loc atttribute.** We don’t necessarily need to use the index to select rows from a data frame, but it does make things easier to understand and for clearer code. For this reason, we often want to use one of a **data frame’s existing columns as an index**. Sometimes, we’ll want to do this permanently, while at other times, we’ll want to do it briefly, just to make our queries clearer.
