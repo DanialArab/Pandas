@@ -1847,10 +1847,10 @@ Matplotlib is, without a doubt, the leading plotting system for Python. Many peo
 
 Whereas pandas visualization is all done via the **plot** attribute, followed by the type of plot we want to create, Seaborn is organized more conceptually, around the different types of insights we might be trying to draw from our plots. We can choose from **four different functions defined within sns**:
 
-    -- To visualize relationships among numeric columns, use sns.relplot. The relplot function is there to show us relationships among numeric columns, and **the default way to do that is with a scatter plot**. 
-    -- To visualize relationships that include categorical columns, use sns.catplot.
-    -- To understand the distribution of data, use sns.displot.
-    -- To visualize regression models, use sns.regplot.
++ To visualize relationships among numeric columns, use sns.relplot. The relplot function is there to show us relationships among numeric columns, and **the default way to do that is with a scatter plot**.
++ To visualize relationships that include categorical columns, use sns.catplot.
+   + To understand the distribution of data, use sns.displot.
+   + To visualize regression models, use sns.regplot.
 
 like
 
