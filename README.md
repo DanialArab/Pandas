@@ -47,12 +47,12 @@ Below is the summary of my notes from the book:
 4. [Indexes](#39)
    1. [Indexes Fundamentals](#40) 
    2. [Working with multi-indexes](#41)
-   3. [Sorting by index]
-   4. [xs and IndexSlice methods]
-   5. [Pivot tables]
-   6. [methods]
-      1. [set_index()]
-      2. [isin()]
+   3. [Sorting by index](#42)
+   4. [xs and IndexSlice methods](#43)
+   5. [Pivot tables](#44)
+   6. [methods](#45)
+      1. [set_index()](#46)
+      2. [isin()](#47)
    10. 
 
 6. [Cleaning data](#5)
