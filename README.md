@@ -2140,14 +2140,14 @@ When using the **%timeit magic command in Jupyter, don’t forget:**
 
 Over the course of this book, I’ve emphasized a number of techniques that you should use to speed up your pandas performance:
 
-        Never use standard Python iterations (for loops and comprehensions) on a series or data frame
-        Take advantage of broadcasting
-        Use the str accessor for anything string related
-        Use the smallest dtype you can, without sacrificing accuracy
-        Avoid double square brackets when setting and retrieving values
-        Load only those columns that you really need for your analysis
-        Columns with repeated values should be turned into categories
-        Use a binary format, such as feather, for data you’ll repeatedly save or load
++ Never use standard Python iterations (for loops and comprehensions) on a series or data frame
++ Take advantage of broadcasting
++ Use the str accessor for anything string related
++ Use the smallest dtype you can, without sacrificing accuracy
++ Avoid double square brackets when setting and retrieving values
++ Load only those columns that you really need for your analysis
++ Columns with repeated values should be turned into categories
++ Use a binary format, such as feather, for data you’ll repeatedly save or load
 
 Even after using all of these techniques, you might find that your queries are still running slowly, or using lots of memory. This often occurs when performing an arithmetic operation on two columns, each of which contains many rows. A related problem is when you’re broadcasting an operation on a scalar and a series. While pandas takes advantage of the high-speed calculations in NumPy, much of the work is still being done within the Python language, which is slower to execute than C.
 
