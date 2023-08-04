@@ -84,7 +84,9 @@ Below is the summary of my notes from the book:
        1. [datetime](#76)
        2. [timedelta](#77)
 10. [Visualization](#78)
-    1. []
+    1. [Box and Whisker plots](#79)
+    2. [scatter matrix](#80)
+    3. [SEABORN](#81)
 
 11. [Performance](#10)
 
@@ -1741,7 +1743,7 @@ When we run resample, we tell it what time-period granularity we’ll want, givi
     
 <a name="78"></a>
 ## Visualization
-HERE
+
 The 900-pound gorilla in the world of Python data visualization is Matplotlib. There’s no doubt that Matplotlib is powerful—but it’s also overwhelming to many people. Fortunately, pandas provides a visualization API that allows us to create plots from our data without having to use Matplotlib explicitly. We thus get the best of both worlds—the ability to plot information in our data frame, without having to learn too much about Matplotlib’s API. However, if and when you need more power, Matplotlib is there, under the hood, available to anyone who wants to use it.
 
 This chapter will also provide you with the opportunity to explore one of the nicest features of the Jupyter notebook, the fact that it **keps images inline**. Whether it’s on your own or by exploring the notebooks that I’ve prepared while writing this book, I strongly encourage you to experiment with Jupyter’s plotting capabilities. The ability to have data, code, and plots in the same document is a game changer for many projects, making it possible for data scientists to both share information and get input from less technical colleagues.
@@ -1756,7 +1758,8 @@ s.quantile : Get the value at a particular percentage of the values like s.quant
 
 pandas.plotting.scatter_matrix : Create scatter plots comparing every pair of numeric columns
 
-### Box and Whisker plots 
+<a name="79"></a>
+###  Box and Whisker plots 
 
 One of the phrases I often use when teach data analytics is that you need to **"know your data."** And one of the best ways to know your data is with a **box plot.**
 
@@ -1826,7 +1829,8 @@ The most common measurement for correlation, and what we’ll use in this book, 
 
 We can also use correlations to hint at underlying similarities and relationships in our data. If two things are correlated, then perhaps there’s some behavior that explains the connection between the two. If that behavior or relationship isn’t obvious, then it can point to a topic worth investigating or understanding better.
 
-**scatter matrix**
+<a name="80"></a>
+### scatter matrix
 
 The scatter matrix is a great way to get a **quick look at all of the correlations in your data set**. The diagonal, which always contains 1.00 values in the call to df.corr(), is a histogram in the scatter matrix, indicating the distribution of values in each column.
 
@@ -1834,6 +1838,7 @@ from pandas.plotting import scatter_matrix
 
 scatter_matrix(df_final)
 
+<a name="81"></a>
 ### SEABORN
 
 Matplotlib is, without a doubt, the leading plotting system for Python. Many people have found it hard to learn and use, however, which has led to the creation of several alternatives to Matplotlib. One of the best-known alternatives, Seaborn (http://seaborn.pydata.org/), was written by data scientist Michael Waskom, and **acts as an API on top of Matplotlib.**
