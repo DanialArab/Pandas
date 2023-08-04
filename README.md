@@ -1527,7 +1527,8 @@ df['LanguageHaveWorkedWith'].str.get_dummies(sep=';')
 
 <a name="74"></a>
 ## Dates and times
-HERE
+
+
 Both the Python language and pandas handle time data with two different data structures: A **"timestamp" data type (also known as a "datetime"** in many languages and systems) handles **specific points in time, one that you can point to using a calendar**. A timestamp happens once, and only once—when you were born, when your plane will be taking off, when you and your date will meet at a restaurant, or when the meeting was scheduled to end. You can describe a timestamp with a particular year, month, day, hour, minute, and second.
 
 A second, complementary data type is that of the **"timedelta," known in some systems as an "interval."** A time delta represents the distance between two timestamp objects. So the meeting’s scheduled start and end can be represented as timestamps, but the time that the meeting takes is a timedelta.
@@ -1546,8 +1547,10 @@ some usefule methods:
 
 **s.diff**: s.diff() returns a new series with the same index as s, but whose values indicate the difference between that value and the previous value
 
+<a name="75"></a>
 ### Creating DATETIME and TIMEDELTA objects
 
+<a name="76"></a>
 #### datetime
 
 As we’ve repeatedly seen, pandas largely avoids built-in Python data structures in favor of its own types, or those defined by NumPy. This is also the case when it comes to dates and times: To represent a specific point in time, we use the **Timestamp class**, instead of either the datetime.datetime class that comes with Python or the np.datetime64 class that comes with NumPy.
@@ -1686,7 +1689,8 @@ Once we have a Timestamp series, we can use the **dt accessor** to retrieve a va
 
 Some of these attributes return numbers, whereas others return boolean values. The full list of attributes you can retrieve via the dt accessor starts at pandas.pydata.org/docs/reference/api/pandas.Series.dt.date.html.
 
-#### timedelta
+<a name="77"></a>
+####  timedelta
 
 we can generally say:
 
