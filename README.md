@@ -54,8 +54,12 @@ Below is the summary of my notes from the book:
       2. [isin()](#46)
       3. [xs()](#47)
       4. [IndexSlice()](#48)
-5. [Cleaning data](#40)
-   1. [
+5. [Cleaning data](#49)
+   1. [How much is missing?](#50)
+   2. [what to do with NaN?](#51)
+   3. [Combining and splitting columns](#52)
+   4. [Inconsistent data](#53)
+   5. [Summary](54)
 
 7. [Grouping, joining, and sorting](#6)
 
@@ -934,9 +938,9 @@ In other words, IndexSlice is syntactic sugar, allowing pandas to look and feel 
 
 When you cannot get what you want with playing with loc, xs, and idx is a good sign of a need to consider changing the existing indexes and maybe setting new index using **set_index** and **reset_index** methods.
 
-<a name="5"></a>
+<a name="49"></a>
 ## 5. Cleaning data
-HERE
+
 I’ve often heard data scientists say that **80 percent of their job involves cleaning data**. What does it mean to "clean data"? Here is a partial list:
 
 * rename columns
@@ -955,9 +959,10 @@ I’ve often heard data scientists say that **80 percent of their job involves c
 * correct the types used for columns
 * identify and remove outliers
 
-We have already discussed some of these techniques in previous chapters. But the importance of cleaning your data, and thus ensuring that your analysis is as accuraet is possible, cannot be overstated.
+We have already discussed some of these techniques in previous chapters. But the importance of cleaning your data, and thus ensuring that your analysis is as accurate as possible, cannot be overstated.
 
-### HOW MUCH IS MISSING?
+<a name="50"></a>
+### How much is missing?
 
 We’ve already seen, on a number of occasions, that data frames (and series) can contain NaN values. One question we often want to answer is: How many NaN values are there in a given column? Or, for that matter, in a data frame?
 
@@ -1037,7 +1042,8 @@ Python’s f-strings have a special format code that, when put a **comma after :
 
 **print(f"NYC loses {(df_ticket.shape[0] - df_ticket_new.shape[0]) * 100:,} $")**
 
-### what to do with NaN
+<a name="51"></a>
+### what to do with NaN?
 
 when we have NaN values, we have a few options:
 
@@ -1060,6 +1066,7 @@ When it comes to the age column, though, we might want to consider our steps car
 I want to set the home.dest column similarly to what I did with the age column—but instead of using the mean, I’ll use the mode (i.e., the most common value). I’ll do this for two reasons: First, because you can only calculate the mean from a numeric value, and the destination is a categorical/textual value. Secondly, because this means that given no other information, we might be able to assume that a passenger is going where most others are going. We might be wrong, but this is the least wrong choice that we can make. We could, of course, be a bit more sophisticated than this, choosing the mode of home.dest for all passengers who embarked at the same place, but we’ll ignore that for now.
 
 
+<a name="52"></a>
 ### Combining and splitting columns
 
 One common aspect of data cleaning involves creating one new column from several existing columns, as well as the reverse—creating multiple columns from a single existing column.
@@ -1089,12 +1096,14 @@ note on df = df.dropna(subset=['age']):
 
 Notice that I’m once again using the subset parameter. Not that there are any rows in the index with NaN values, **but it’s always a good idea to be specific, just in case.**
 
+<a name="53"></a>
 ### Inconsistent data
 
 Missing data is a common issue that you’ll need to deal with when importing data sets. But equally common is inconsistent data, when the same value is represented by a number of different values.
 
 Thus, a big part of cleaning real-world data involves making it more consistent—or to use a term from the world of databases, **"normalizing"** it.
 
+<a name="54"></a>
 ### Summary
 
 Cleaning data is one of the most important parts of data analysis, although it’s not very glamorous. In this chapter, we saw that effective cleaning of data **requires not just knowing the techniques, but also applying judgment**—knowing when you can allow null or duplicate values, and then what you should do with them. pandas comes with a wide variety of tools that we can use in cleaning our data, from removing NaN values to replacing them, to replacing existing values, to running custom functions on each row in a series or data frame. The techniques that we explored in this chapter, along with the interpolate method that we saw before, are important tools in your data-cleaning toolbox, and will likely come up in many of the projects you work on.
