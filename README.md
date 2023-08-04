@@ -88,11 +88,11 @@ Below is the summary of my notes from the book:
     2. [scatter matrix](#80)
     3. [SEABORN](#81)
 10. [Performance](#82)
-    1. [Memory usage](#82)
-    2. [Saving Memory with categories](#83)
-    3. [APACHE ARROW](#84)
-    4. [Tracking time](#85)
-    5. [Speeding things up with eval and query](#86)
+    1. [Memory usage](#83)
+    2. [Saving Memory with categories](#84)
+    3. [APACHE ARROW](#85)
+    4. [Time tracking](#86)
+    5. [Speeding things up with eval and query](#87)
 
 Pandas is all about analyzing data. And a major part of the analysis that we do in Pandas can be phrased as, **"Where this is the case, show me that"** (Reuven Lerner).
 
