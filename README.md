@@ -60,9 +60,16 @@ Below is the summary of my notes from the book:
    3. [Combining and splitting columns](#52)
    4. [Inconsistent data](#53)
    5. [Summary](#54)
-
-7. [Grouping, joining, and sorting](#6)
-
+6. [Grouping, joining, and sorting](#55)
+   1. [Sorting](#55)
+   2. [Grouping](#55)
+   3.  [Joining](#55)
+   4.  [Normalization](#55)
+   5.  [Window functions](#55)
+      1. [Expanding window function](#55)
+      2. [Rolling window function](#55)
+      3. [pct_change window function](#55)
+   6. [Filtering and transforming](#55)
 8. [Strings](#7)
 
 9. [Dates and times](#8)
