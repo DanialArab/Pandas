@@ -2157,10 +2157,11 @@ We can avoid these problems, as well as make our queries more readable, using th
 
 However, it’s important to understand that these methods are not **cure-alls for your performance problems**:
 
-        Using them on small data frames, with fewer than 10,000 rows, will often result in slower performance, not in faster performance.
-        Often, the bottleneck in your performance is in assignment or retrieval of elements, not in the calculation. Which means that there won’t be a speed boost in such cases.
-        You’ll need to install the numexpr package from PyPI, and then explicitly tell pandas to use it. If you don’t make this explicit, then pandas will use its default Python-based engine for parsing the query string, resulting in no speedup (but in the exercise reuven did not bring this up and just showed us how faster our queries would be using query and eval and I managed to finish all the exercises without needing to pip install numexpr!).
-        Anything which doesn’t involve calculations, comparisons, and boolean operators will either raise an exception or run at the standard (non-enhanced) speed.
++ Using them on small data frames, with fewer than 10,000 rows, will often result in slower performance, not in faster performance.
++ Often, the bottleneck in your performance is in assignment or retrieval of elements, not in the calculation. Which means that there won’t be a speed boost in such cases.
++ You’ll need to install the numexpr package from PyPI, and then explicitly tell pandas to use it. If you don’t make this explicit, then pandas will use its default Python-based engine for parsing the query string, resulting in no speedup (but in the exercise reuven did not bring this up and just showed us how faster our queries would be using query and eval and I managed to finish all the exercises without needing to pip install numexpr!).
++ Anything which doesn’t involve calculations, comparisons, and boolean operators will either raise an exception or run at the standard (non-enhanced) speed.
+
 Let’s start by looking at the query for data frames. We’ll then talk about two versions of eval, which are part of the same family.
 
 Given a data frame df, the method df.query allows you to describe which rows you want to get back from df. The description is passed as an SQL-like string in which the columns can be named as if they were variables. The result of the query will be a data frame, a subset of df, with **all of the columns from df and those rows for which the comparison returned a True value** (so i think i don't have an option of selecting columns using query mehtod). for example:
