@@ -54,19 +54,17 @@ Below is the summary of my notes from the book:
       2. [isin()](#46)
       3. [xs()](#47)
       4. [IndexSlice()](#48)
-   10. 
+5. [Cleaning data](#40)
 
-6. [Cleaning data](#5)
+6. [Grouping, joining, and sorting](#6)
 
-7. [Grouping, joining, and sorting](#6)
+7. [Strings](#7)
 
-8. [Strings](#7)
+8. [Dates and times](#8)
 
-9. [Dates and times](#8)
+9. [Visualization](#9)
 
-10. [Visualization](#9)
-
-11. [Performance](#10)
+10. [Performance](#10)
 
 Pandas is all about analyzing data. And a major part of the analysis that we do in Pandas can be phrased as, **"Where this is the case, show me that"** (Reuven Lerner).
 
@@ -935,17 +933,9 @@ In other words, IndexSlice is syntactic sugar, allowing pandas to look and feel 
 
 When you cannot get what you want with playing with loc, xs, and idx is a good sign of a need to consider changing the existing indexes and maybe setting new index using **set_index** and **reset_index** methods.
 
- 6. [methods](#45)
-      1. [set_index()](#46)
-      2. [isin()](#47)
-      3. [xs()](#48)
-      4. [IndexSlice()](#49)
-
-    
-
 <a name="5"></a>
 ## 5. Cleaning data
-
+HERE
 I’ve often heard data scientists say that **80 percent of their job involves cleaning data**. What does it mean to "clean data"? Here is a partial list:
 
     * rename columns
