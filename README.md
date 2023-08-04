@@ -53,6 +53,8 @@ Below is the summary of my notes from the book:
    6. [methods](#45)
       1. [set_index()](#46)
       2. [isin()](#47)
+      3. [xs()](#48)
+      4. [IndexSlice()](#49)
    10. 
 
 6. [Cleaning data](#5)
@@ -814,54 +816,6 @@ b/c here sport is the 3rd level index specified by 'Archery', I do need to speci
 
     df_game.loc[(slice(None), slice(None), 'Archery'), ['Team', 'Medal']].value_counts()
     
-### xs and IndexSlice methods
-
-#### xs
-
-As we have already seen, loc makes it pretty straightforward to retrieve data from our multi-indexed data frames. However, there are times when we might want to use a multi-index in a different kind of way. pandas provides us with a few other methods for doing so, one being xs and the other IndexSlice.
-
-Because multi-indexed data frames are both common and important, pandas provides a number of ways to retrieve data from them.
-
-Let’s start with xs, which lets us accomplish what we did in Exercise 23, namely find matches for certain levels within a multi-index. For example, one question in the previous exercise asked you to find the mean height of participants in the "Table Tennis Women’s Team" event from all years of the Olympics. **Using loc, we had to tell pandas to accept all values for year, all values for season, and all values for sport—in other words, we were only checking the fourth level of the multi-index, namely the event**. Our query looked like this:
-
-    df.loc[(slice(None), 'Summer' , slice(None), "Table Tennis Women's Team"), 'Height'].mean()
-
-Using xs, we could shorten that query to:
-
-    df.xs("Table Tennis Women's Team", level='Event').mean()
-
-You might have noticed that I actually lied a bit, when I said that we didn’t search by season. As you can see in the loc-based query, we actually did include that in our search. Fortunately, I can handle that by passing a list of levels to the level parameter, and a tuple of values as the first argument:
-
-    df.xs(('Summer', "Table Tennis Women's Team"), level=['Season', 'Event']).mean()
-
-Notice that **xs is a method, and is thus invoked with round parentheses. By contrast, loc is an accessor attribute, and is invoked with square brackets.** And yes, it’s often hard to keep track of these things.
-
-You can, by the way, use integers as the arguments to level, rather than names. I find column names to be far easier to understand, though, and encourage you to do the same.
-
-#### IndexSlice
-
-A more general way to retrieve from a multi-index is known as IndexSlice. Remember when I mentioned earlier that we cannot use : inside of round parentheses, and thus need to say slice(None)? Well, **IndexSlice solves that problem: It uses square brackets, and can use slice syntax for any set of values.**
-
-For example, I can say:
-
-    from pandas import IndexSlice as idx
-
-    df.loc[idx[1980:2020, :, 'Swimming':'Table tennis'], :]
-
-The above code allows us to select a range of values for each of the levels of the multi-index. No longer do we need to call the slice function. Now we can use the standard Python : syntax for slicing within each level. The result of calling IndexSlice (or idx, as I aliased it here) is a tuple of Python slice objects:
-
-**I cannot understand this:**
-
-    (slice(1980, 2020, None),
-     slice(None, None, None),
-     slice('Swimming', 'Table tennis', None))
-
-In other words, IndexSlice is syntactic sugar, allowing pandas to look and feel more like a standard Python data structure, even when the index is far more complex.
-
-### Great tip: 
-
-When you cannot get what you want with playing with loc, xs, and idx is a good sign of a need to consider changing the existing indexes and maybe setting new index using **set_index** and **reset_index** methods.
-
 <a name="43"></a>
 ###  Pivot tables
 
@@ -904,15 +858,7 @@ Remember that a pivot table will have one row for each unique value in your firs
 
 The pivot tables are constructed based on **actual columns, and not the index**, and so when reading csv file to crfaete a df we’ll stick with the default, numeric index that pandas assigns to every data frame and I don't need to set index.
 
-**isin**
-
-we can use the isin method, which allows us to pass a list of possibilities, and get a True value whenever the 'Team' column is equal to one of those possible strings. In my experience, the isin method is one of those things that seems so obvious when you start to use it, but that is far from obvious until you know to look for it.
-
-I can thus keep only those countries in this way:
-
-    df = df[df['Team'].isin(['Great Britain', 'France', 'United States', 'Switzerland', 'China', 'India'])]
-
-**tips to crfeate a pivot table**
+**tips to create a pivot table**
 
 With our data frame in place, we can now start to create some pivot tables, to examine our data from a new perspective. For example, here I was first asked to compare the average age of players for each team (across all sports) all years. As usual, when we’re creating pivot tables, we need to consider **what will be the rows, the columns, and the values**:
 
@@ -923,6 +869,75 @@ With our data frame in place, we can now start to create some pivot tables, to e
 Sure enough, we can then create our pivot table as follows:
 
     pd.pivot_table(df, index='Year', columns='Team', values='Age')
+
+<a name="44"></a>
+### methods
+  
+<a name="47"></a>
+#### isin()
+
+we can use the isin method, which allows us to pass a list of possibilities, and get a True value whenever the 'Team' column is equal to one of those possible strings. In my experience, the isin method is one of those things that seems so obvious when you start to use it, but that is far from obvious until you know to look for it.
+
+I can thus keep only those countries in this way:
+
+    df = df[df['Team'].isin(['Great Britain', 'France', 'United States', 'Switzerland', 'China', 'India'])]
+
+
+<a name="48"></a>
+#### xs
+
+As we have already seen, loc makes it pretty straightforward to retrieve data from our multi-indexed data frames. However, there are times when we might want to use a multi-index in a different kind of way. pandas provides us with a few other methods for doing so, one being xs and the other IndexSlice.
+
+Because multi-indexed data frames are both common and important, pandas provides a number of ways to retrieve data from them.
+
+Let’s start with xs, which lets us accomplish what we did in Exercise 23, namely find matches for certain levels within a multi-index. For example, one question in the previous exercise asked you to find the mean height of participants in the "Table Tennis Women’s Team" event from all years of the Olympics. **Using loc, we had to tell pandas to accept all values for year, all values for season, and all values for sport—in other words, we were only checking the fourth level of the multi-index, namely the event**. Our query looked like this:
+
+    df.loc[(slice(None), 'Summer' , slice(None), "Table Tennis Women's Team"), 'Height'].mean()
+
+Using xs, we could shorten that query to:
+
+    df.xs("Table Tennis Women's Team", level='Event').mean()
+
+You might have noticed that I actually lied a bit, when I said that we didn’t search by season. As you can see in the loc-based query, we actually did include that in our search. Fortunately, I can handle that by passing a list of levels to the level parameter, and a tuple of values as the first argument:
+
+    df.xs(('Summer', "Table Tennis Women's Team"), level=['Season', 'Event']).mean()
+
+Notice that **xs is a method, and is thus invoked with round parentheses. By contrast, loc is an accessor attribute, and is invoked with square brackets.** And yes, it’s often hard to keep track of these things.
+
+You can, by the way, use integers as the arguments to level, rather than names. I find column names to be far easier to understand, though, and encourage you to do the same.
+
+<a name="49"></a>
+#### IndexSlice
+
+A more general way to retrieve from a multi-index is known as IndexSlice. Remember when I mentioned earlier that we cannot use : inside of round parentheses, and thus need to say slice(None)? Well, **IndexSlice solves that problem: It uses square brackets, and can use slice syntax for any set of values.**
+
+For example, I can say:
+
+    from pandas import IndexSlice as idx
+
+    df.loc[idx[1980:2020, :, 'Swimming':'Table tennis'], :]
+
+The above code allows us to select a range of values for each of the levels of the multi-index. No longer do we need to call the slice function. Now we can use the standard Python : syntax for slicing within each level. The result of calling IndexSlice (or idx, as I aliased it here) is a tuple of Python slice objects:
+
+**I cannot understand this:**
+
+    (slice(1980, 2020, None),
+     slice(None, None, None),
+     slice('Swimming', 'Table tennis', None))
+
+In other words, IndexSlice is syntactic sugar, allowing pandas to look and feel more like a standard Python data structure, even when the index is far more complex.
+
+### Great tip: 
+
+When you cannot get what you want with playing with loc, xs, and idx is a good sign of a need to consider changing the existing indexes and maybe setting new index using **set_index** and **reset_index** methods.
+
+ 6. [methods](#45)
+      1. [set_index()](#46)
+      2. [isin()](#47)
+      3. [xs()](#48)
+      4. [IndexSlice()](#49)
+
+    
 
 <a name="5"></a>
 ## 5. Cleaning data
