@@ -71,12 +71,20 @@ Below is the summary of my notes from the book:
       3. [pct_change window function](#63)
    6. [Filtering and transforming](#64)
 8. [Strings](#65)
+   1. [str accessor](#66)
+   2. [Methods](#67)
+      1. [read()](#68)
+      2. [split()](#69)
+      3. [isin()](#70)
+      4. [intersection()](#71)
+      5. [explode()](#72)
+      6. [get_dummies()](#73)
+9. [Dates and times](#74)
+    1. [
 
-9. [Dates and times](#8)
+11. [Visualization](#9)
 
-10. [Visualization](#9)
-
-11. [Performance](#10)
+12. [Performance](#10)
 
 Pandas is all about analyzing data. And a major part of the analysis that we do in Pandas can be phrased as, **"Where this is the case, show me that"** (Reuven Lerner).
 
@@ -1426,14 +1434,15 @@ The filter method for GroupBy is very similar to Python’s builtin filter funct
 
 The DataFrameGroupBy versions of filter and transform are, in my experience, among the most complex pieces of functionality that pandas provides. It might take you a while to think through what calculation you want to perform, and then to find the right way to express it in pandas.
 
-<a name="7"></a>
-## 7. Strings
+<a name="65"></a>
+## Strings
 
 It turns out that pandas is also well equipped to handle text. It does this not by storing string data in NumPy, but rather by using full-fledged string objects, either those that come with Python or (more recently) a pandas-specific string class that reduces both ambiguity and errors. (I’ll have more to say about these two string types, and when to use each one, later in the chapter.) In either case, we have access to a wide variety of methods that we can apply to these strings, normally via the **str accessor.**
 
 In this chapter, you’ll work through exercises that will help you to identify and understand how to work with textual data and the str accessor in pandas. After going through these exercises, you’ll know which string methods are available, feel more comfortable using them, and **even know how to apply your own custom functions to string columns.**
 
 
+<a name="66"></a>
 ### str accessor
 
 Traditional Python strings support a large number of methods and operators, ranging from search (str.index) to replacement (str.replace) to substrings (slices) to checks of the string’s content (e.g., str.isdigit and str.isspace). But if we have a series containing strings, how can we invoke such a method on every element?
@@ -1450,8 +1459,11 @@ Note that while str.contains currently (as of this writing) defaults to treating
 
     s[s.str.contains('[ae]', regex=True)]
 
+<a name="67"></a>
+### Methods
 
-**read() method**
+<a name="68"></a>
+#### read() 
 
 The read method returns a string containing the contents of the file:
 
@@ -1459,13 +1471,15 @@ The read method returns a string containing the contents of the file:
 
 What if the file contains several terabytes of data? Then unless the IT department at your company is unusually generous, you’ll find yourself running out of memory. Normally, I suggest that people **not read an entire file into memory at once, instead iterating over its lines**. 
 
-**split method**
+<a name="69"></a>
+#### split()
 
     s.str.split(): 
 
 In this case, we did not specify a delimiter, which means that split will use any **whitespace—space, tab, newline, carriage return, and vertical tab**—to break them apart. 
 
-**isin method**
+<a name="70"></a>
+#### isin
 
 isin method allows us to perform an "or" search—one that we could certainly do with pandas boolean operators and a mask index, but which becomes shorter and more readable with isin.
 
@@ -1479,13 +1493,15 @@ top_ten_want_to_use = df_so['LanguageWantToWorkWith'].str.split(';').explode().v
 
 top_ten_used[top_ten_used.isin(top_ten_want_to_use)]
 
-**intersection method**
+<a name="71"></a>
+#### intersection method
 
 But it turns out that pandas makes it easy to do this, with the "intersection" method. Note that this method works on **index objects, and not on series**:
 
 top_ten_want_to_use.intersection(top_ten_used)
 
-**explode method**
+<a name="72"></a>
+#### explode method
 
 s.explode() returns a new series with each element on its **own line** meaning in its row
 
@@ -1495,7 +1511,8 @@ the series that we get back from explode has the **same index as the original se
 
 This means that while we cannot assign the exploded series as a column, we can use join to merge the series onto the data frame.
 
-**get_dummies method** 
+<a name="73"></a>
+#### get_dummies method 
 
 It allows us creating "dummy **columns**." Instead of a column containing the string 'JavaScript;Python', we’ll create one column called JavaScript and another called Python, putting 1s where the person marked themselves as using JavaScript, and 0s where they indicated they did not.
 
@@ -1505,9 +1522,9 @@ df['LanguageHaveWorkedWith'].str.get_dummies(sep=';')
 
 * i belive it is kind of like one hot encoding in ML. chatGPT thoughts on my understanding:  Yes, that's correct. get_dummies is a method in the pandas library in Python that is used to perform one-hot encoding. One-hot encoding is a technique used to represent categorical variables as numerical data, so that they can be used as input to machine learning algorithms.
 
-<a name="8"></a>
-## 8. Dates and times
-
+<a name="74"></a>
+## Dates and times
+HERE
 Both the Python language and pandas handle time data with two different data structures: A **"timestamp" data type (also known as a "datetime"** in many languages and systems) handles **specific points in time, one that you can point to using a calendar**. A timestamp happens once, and only once—when you were born, when your plane will be taking off, when you and your date will meet at a restaurant, or when the meeting was scheduled to end. You can describe a timestamp with a particular year, month, day, hour, minute, and second.
 
 A second, complementary data type is that of the **"timedelta," known in some systems as an "interval."** A time delta represents the distance between two timestamp objects. So the meeting’s scheduled start and end can be represented as timestamps, but the time that the meeting takes is a timedelta.
