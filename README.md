@@ -514,9 +514,9 @@ You might have noticed that the files I’ve provided both have a .csv.gz suffix
                     usecols=['OPEID6'])
 
 
-# useful tip on data science
+#### useful tip on data science
 
-When teaching data science, I often use the phrase "know your data." That’s because it’s important to really know as much about your data as you can before willy-nilly reading it into memory. You probably don’t want to load all of the columns into pandas. And you might want to specify the type of data that’s in each column, rather than let pandas just guess.
+When teaching data science, I often use the phrase "know your data." That’s because it’s important to really know as much about your data as you can before willy-nilly reading it into memory. You probably don’t want to load all of the columns into Pandas. And you might want to specify the type of data that’s in each column, rather than let Pandas just guess.
 
 Most data sets come with a "data dictionary," a file that describes the columns, their types, their meanings, and their ranges. It’s almost always worth your while to read a data dictionary when starting to analyze the data. In many cases, the dictionary will give you insights into the data.
                                  
@@ -526,9 +526,9 @@ The usecols parameter to pd.read_csv allows us to select which columns from the 
 
 ### url
 
-You can pass a URL to read_csv, and assuming that the URL returns a CSV file, pandas will return a new data frame. The rest of the parameters are the same as any other call to read_csv. The only difference is that you’re reading from a URL, rather than from a file on a filesystem.
+You can pass a URL to read_csv, and assuming that the URL returns a CSV file, Pandas will return a new data frame. The rest of the parameters are the same as any other call to read_csv. The only difference is that you’re reading from a URL, rather than from a file on a filesystem.
 
-Why is this important and useful? Because there are numerous systems that produce hourly or hourly reports, publishing in CSV format to a URL that doesn’t change. If you retrieve data from that URL, then you’re guaranteed to get a CSV file reflecting the latest and greatest data. Thanks to the URL provisions of read_csv, you can include pandas in your daily reporting routine, summarizing and extracting the most important data from this report.
+Why is this important and useful? Because there are numerous systems that produce hourly or hourly reports, publishing in CSV format to a URL that doesn’t change. If you retrieve data from that URL, then you’re guaranteed to get a CSV file reflecting the latest and greatest data. Thanks to the URL provisions of read_csv, you can include Pandas in your daily reporting routine, summarizing and extracting the most important data from this report.
 
 In many cases, CSV files published to a URL will require authentication via a username and password. In some cases, sites allow you to include such authentication details in the URL. For those that don’t, you won’t be able to retrieve directly via read_csv. Rather, you’ll need to retrieve the data separately, perhaps using the excellent third-party **requests package**, and then create a StringIO with the contents of the retrieved data.
 
@@ -540,7 +540,6 @@ What always amazes me about using pd.read_csv is how easy it is to read CSV data
 tips on reading text file through pd.read_csv
 
 First just open it to see what is the field separator. Then see if you have any comments and if so see how the start of a comment line is mared, then you need to do header = None b/c it is not a csv file and so definitely doesn’t have headers. then you may want to pass names including your desired names for the dataframe you will be creating. 
-
 
 #### 1. sep
 CSV files are named for the default field separator, the comma. By default, pandas assumes that we have comma-separated values. It’s fine if we want to use another character, but then we’ll need to specify that in the sep keyword argument. If our separator is :, so we’ll pass sep=':' to read_csv.
