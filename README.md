@@ -59,7 +59,7 @@ Below is the summary of my notes from the book:
    2. [what to do with NaN?](#51)
    3. [Combining and splitting columns](#52)
    4. [Inconsistent data](#53)
-   5. [Summary](54)
+   5. [Summary](#54)
 
 7. [Grouping, joining, and sorting](#6)
 
