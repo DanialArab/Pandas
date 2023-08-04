@@ -48,13 +48,12 @@ Below is the summary of my notes from the book:
    1. [Indexes Fundamentals](#40) 
    2. [Working with multi-indexes](#41)
    3. [Sorting by index](#42)
-   4. [xs and IndexSlice methods](#43)
-   5. [Pivot tables](#44)
-   6. [methods](#45)
-      1. [set_index()](#46)
-      2. [isin()](#47)
-      3. [xs()](#48)
-      4. [IndexSlice()](#49)
+   4. [Pivot tables](#43)
+   5. [methods](#44)
+      1. [set_index()](#45)
+      2. [isin()](#46)
+      3. [xs()](#47)
+      4. [IndexSlice()](#48)
    10. 
 
 6. [Cleaning data](#5)
@@ -872,8 +871,13 @@ Sure enough, we can then create our pivot table as follows:
 
 <a name="44"></a>
 ### methods
-  
-<a name="47"></a>
+
+<a name="45"></a>
+#### set_index() 
+
+It is a method in Pandas used to set one or more columns as the DataFrame's index. It allows you to reorganize and modify the DataFrame's index according to your needs.
+
+<a name="46"></a>
 #### isin()
 
 we can use the isin method, which allows us to pass a list of possibilities, and get a True value whenever the 'Team' column is equal to one of those possible strings. In my experience, the isin method is one of those things that seems so obvious when you start to use it, but that is far from obvious until you know to look for it.
@@ -883,7 +887,7 @@ I can thus keep only those countries in this way:
     df = df[df['Team'].isin(['Great Britain', 'France', 'United States', 'Switzerland', 'China', 'India'])]
 
 
-<a name="48"></a>
+<a name="47"></a>
 #### xs
 
 As we have already seen, loc makes it pretty straightforward to retrieve data from our multi-indexed data frames. However, there are times when we might want to use a multi-index in a different kind of way. pandas provides us with a few other methods for doing so, one being xs and the other IndexSlice.
@@ -906,7 +910,7 @@ Notice that **xs is a method, and is thus invoked with round parentheses. By con
 
 You can, by the way, use integers as the arguments to level, rather than names. I find column names to be far easier to understand, though, and encourage you to do the same.
 
-<a name="49"></a>
+<a name="48"></a>
 #### IndexSlice
 
 A more general way to retrieve from a multi-index is known as IndexSlice. Remember when I mentioned earlier that we cannot use : inside of round parentheses, and thus need to say slice(None)? Well, **IndexSlice solves that problem: It uses square brackets, and can use slice syntax for any set of values.**
